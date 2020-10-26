@@ -1,2 +1,2 @@
-# checkers
-Play checkers against an AI
+# Checkers
+Play checkers against an AI ~ Work in progress
