@@ -1,0 +1,63 @@
+.row {
+    flex-direction: row;
+    display: flex;
+}
+
+.square_dark,
+.square_light {
+    width: 72px;
+    height: 72px;
+    float: left;
+    background: 
+    radial-gradient(farthest-side,var(--c,transparent) 98%,transparent 100%),
+    var(--b,transparent);
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
+}
+
+.square {
+    float: left;
+    width: 80px;
+    height: 80px;
+}
+
+.square_dark {
+    background-color: #BA7A3A;
+}
+
+.square_light {
+    background-color: #e6d7d7;
+}
+
+.checker-black {
+    --c: rgb(27, 27, 139);
+}
+
+.checker-white {
+    --c: rgb(160, 160, 160);
+}
+
+.checker{
+	border-radius: 50%;
+	border: 2px solid white;
+    cursor: pointer;
+    position: relative;
+    width: 75%;
+    height: 75%;
+    top: 6px;
+    left: 6px;
+    box-shadow: 5px 6px 15px -3px #000000;
+}
+
+.possible_move {
+    border-radius: 50%;
+    border: 2px solid rgb(191 191 191);
+    cursor: pointer;
+    position: relative;
+    width: 20%;
+    height: 20%;
+    top: 26px;
+    left: 26px;
+}
