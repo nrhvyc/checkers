@@ -8,13 +8,6 @@
     width: 72px;
     height: 72px;
     float: left;
-    background: 
-    radial-gradient(farthest-side,var(--c,transparent) 98%,transparent 100%),
-    var(--b,transparent);
-    -webkit-transition: 0.3s ease-in-out;
-    -moz-transition: 0.3s ease-in-out;
-    -o-transition: 0.3s ease-in-out;
-    transition: 0.3s ease-in-out;
 }
 
 .square {
@@ -49,6 +42,13 @@
     top: 6px;
     left: 6px;
     box-shadow: 5px 6px 15px -3px #000000;
+    background: 
+    radial-gradient(farthest-side,var(--c,transparent) 98%,transparent 100%),
+    var(--b,transparent);
+    -webkit-transition: 0.3s ease-in-out;
+    -moz-transition: 0.3s ease-in-out;
+    -o-transition: 0.3s ease-in-out;
+    transition: 0.3s ease-in-out;
 }
 
 .possible_move {
