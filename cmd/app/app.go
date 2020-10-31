@@ -17,13 +17,19 @@
 // )
 package main
 
-import "github.com/maxence-charriere/go-app/v7/pkg/app"
+import (
+	"github.com/maxence-charriere/go-app/v7/pkg/app"
+	"github.com/nrhvyc/checkers/internal/game"
+)
 
+// Game ...
 type Game struct {
 	app.Compo
-	name  string
-	board Board
+	Board game.Board
 }
+
+// GameState holds global state
+var GameState Game
 
 func pageLoad() app.UI {
 	// Check for ongoing game
@@ -33,8 +39,12 @@ func pageLoad() app.UI {
 }
 
 func newGame() app.UI {
+	GameState = Game{
+		Board: game.NewBoard(),
+	}
+
 	return &Game{
-		board: newBoard(),
+		Board: game.NewBoard(),
 	}
 }
 
@@ -42,14 +52,14 @@ func newGame() app.UI {
 func (g *Game) Render() app.UI {
 	return app.Div().Body(
 		app.Main().Body(
-			g.board.Render(),
+			g.Board.Render(),
 		),
 	)
 }
 
 // OnInputChange ...
 func (g *Game) OnInputChange(ctx app.Context, e app.Event) {
-	g.name = ctx.JSSrc.Get("value").String()
+	// g.name = ctx.JSSrc.Get("value").String()
 	g.Update()
 }
 
