@@ -15,22 +15,30 @@ type Board struct {
 func NewBoard() Board {
 	b := Board{
 		state: "_b_b_b_bb_b_b_b__b_b_b_b________________w_w_w_w__w_w_w_ww_w_w_w_",
+		// state: "_b_b_b_b
+		// 		b_b_b_b_
+		// 		_b_b_b_b
+		// 		________
+		// 		________
+		// 		w_w_w_w_
+		// 		_w_w_w_w
+		// 		w_w_w_w_",
 	}
 
-	b.calculateBoard()
+	// b.calculateBoard()
 
 	return b
 }
 
 // Render ...
 func (b *Board) Render() app.UI {
-	_ = b.calculateBoard()
+	b.calculateBoard()
 	var uiPositions []app.UI
 
 	for i := 0; i < 8; i++ {
 		row := []app.UI{} // reset row
 		for j := 0; j < 8; j++ {
-			row = append(row, b.Positions[i+j].Square.Render())
+			row = append(row, b.Positions[8*i+j].Square.Render())
 		}
 		uiPositions = append(uiPositions, app.Div().Class("row").Body(row...))
 	}
@@ -42,7 +50,7 @@ func (b *Board) Render() app.UI {
 	)
 }
 
-func (b *Board) calculateBoard() (boardUI []app.UI) {
+func (b *Board) calculateBoard() {
 	// board := b.state
 	// board state will be recieved as single string
 
@@ -55,10 +63,10 @@ func (b *Board) calculateBoard() (boardUI []app.UI) {
 		// 	row = []app.UI{} // reset row
 		// }
 
-		b.Positions[i] = Position{}
+		b.Positions[i] = Position{Value: i}
 		b.Positions[i].Square = Square{
 			Position: &b.Positions[i],
-			Value:    string(value),
+			// Value:    string(value),
 		}
 		b.Positions[i].Checker = &Checker{
 			Position: &b.Positions[i],
@@ -72,7 +80,7 @@ func (b *Board) calculateBoard() (boardUI []app.UI) {
 		// }
 	}
 
-	return boardUI
+	return
 }
 
 // func GetPosition(value int) *Position {

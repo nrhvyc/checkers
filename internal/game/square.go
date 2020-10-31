@@ -6,7 +6,7 @@ import "github.com/maxence-charriere/go-app/v7/pkg/app"
 type Square struct {
 	app.Compo
 	Position *Position
-	Value    string // b, w, or _
+	// Value    string // b, w, or _
 
 	// Style
 }
@@ -32,7 +32,7 @@ func (s *Square) Render() app.UI {
 		color = "square_light"
 	}
 
-	checker := Checker{Position: s.Position, Value: s.Value}
+	checker := Checker{Position: s.Position}
 
 	return app.Div().Class(color).Body(
 		checker.Render(),
@@ -42,4 +42,10 @@ func (s *Square) Render() app.UI {
 // TogglePossibleMoveHighlight ...
 func (s *Square) TogglePossibleMoveHighlight() {
 	// s.JSSrc.Get("isHighlighted")
+}
+
+// OnClick ...
+func (s *Square) OnClick(ctx app.Context, e app.Event) {
+	ctx.JSSrc.Set("value", s.Position.Value)
+	s.Update()
 }

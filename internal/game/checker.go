@@ -14,9 +14,9 @@ type Checker struct {
 // Render ...
 func (c *Checker) Render() app.UI {
 	squareClasses := ""
-	if string(c.Value) == "b" {
+	if string(c.Position.Checker.Value) == "b" {
 		squareClasses += "checker-black checker"
-	} else if string(c.Value) == "w" {
+	} else if string(c.Position.Checker.Value) == "w" {
 		squareClasses += "checker-white checker"
 	}
 
@@ -31,6 +31,7 @@ func (c *Checker) onClick(ctx app.Context, e app.Event) {
 	// 	move.To.HasChecker()
 	// }
 	// fmt.Println("yep")
+	// ctx.JSSrc.Set("value", c.Value)
 	return
 }
 
