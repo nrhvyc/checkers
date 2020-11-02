@@ -4,7 +4,8 @@ package game
 type Position struct {
 	Square  Square
 	Checker *Checker
-	Value   int
+
+	Value int // TODO: make unexported
 }
 
 // HasChecker ...
@@ -13,4 +14,9 @@ func (p *Position) HasChecker() bool {
 		return false
 	}
 	return true
+}
+
+// GetValue - since value will be immutable
+func (p *Position) GetValue() int {
+	return p.Value
 }

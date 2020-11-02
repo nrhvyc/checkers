@@ -11,6 +11,9 @@ type Board struct {
 	Positions [64]Position
 }
 
+// boardState holds global state
+var boardState Board
+
 // NewBoard creates a board with pieces in the starting state
 func NewBoard() Board {
 	b := Board{
@@ -25,14 +28,13 @@ func NewBoard() Board {
 		// 		w_w_w_w_",
 	}
 
-	// b.calculateBoard()
+	b.calculatePositions()
 
 	return b
 }
 
 // Render ...
 func (b *Board) Render() app.UI {
-	b.calculateBoard()
 	var uiPositions []app.UI
 
 	for i := 0; i < 8; i++ {
@@ -50,39 +52,22 @@ func (b *Board) Render() app.UI {
 	)
 }
 
-func (b *Board) calculateBoard() {
-	// board := b.state
-	// board state will be recieved as single string
-
-	// row := []app.UI{}
-
+func (b *Board) calculatePositions() {
 	// Creating the actual squares of the board
 	for i, value := range b.state {
-		// if i%8 == 0 {
-		// 	boardUI = append(boardUI, app.Div().Class("row").Body(row...))
-		// 	row = []app.UI{} // reset row
-		// }
-
 		b.Positions[i] = Position{Value: i}
 		b.Positions[i].Square = Square{
-			Position: &b.Positions[i],
-			// Value:    string(value),
+			position: &b.Positions[i],
 		}
 		b.Positions[i].Checker = &Checker{
 			Position: &b.Positions[i],
 			Value:    string(value),
 		}
-
-		// row = append(row, square.Render())
-
-		// if len(board)-1 == i {
-		// 	boardUI = append(boardUI, app.Div().Class("row").Body(row...))
-		// }
 	}
-
 	return
 }
 
-// func GetPosition(value int) *Position {
-// 	return &board.Positions[value]
-// }
+// GetPosition retrieves the respective Position from the game state
+func (b *Board) GetPosition(val int) *Position {
+	return &b.Positions[val]
+}

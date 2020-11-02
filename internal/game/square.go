@@ -5,10 +5,10 @@ import "github.com/maxence-charriere/go-app/v7/pkg/app"
 // Square ...
 type Square struct {
 	app.Compo
-	Position *Position
+	position *Position
 	// Value    string // b, w, or _
 
-	// Style
+	style string
 }
 
 // func newSquare() {}
@@ -26,13 +26,15 @@ func (s *Square) Render() app.UI {
 		true, false, true, false, true, false, true, false}
 
 	color := ""
-	if darkMap[s.Position.Value] {
+	if darkMap[s.position.Value] {
 		color = "square_dark"
 	} else {
 		color = "square_light"
 	}
 
-	checker := Checker{Position: s.Position}
+	s.style += " " + color
+
+	checker := Checker{Position: s.position}
 
 	return app.Div().Class(color).Body(
 		checker.Render(),
@@ -46,6 +48,6 @@ func (s *Square) TogglePossibleMoveHighlight() {
 
 // OnClick ...
 func (s *Square) OnClick(ctx app.Context, e app.Event) {
-	ctx.JSSrc.Set("value", s.Position.Value)
+	ctx.JSSrc.Set("value", s.position.Value)
 	s.Update()
 }

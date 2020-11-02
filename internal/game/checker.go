@@ -8,7 +8,8 @@ import (
 type Checker struct {
 	app.Compo
 	Position *Position
-	Value    string // b, w, or _
+
+	Value string // b, w, or _
 }
 
 // Render ...
@@ -22,39 +23,50 @@ func (c *Checker) Render() app.UI {
 
 	return app.Div().
 		Class(squareClasses)
-	// .
-	// OnClick(c.onClick())
+	// .OnClick()
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {
-	// for _, move := range c.possibleMoves() {
-	// 	move.To.HasChecker()
-	// }
+	for _, move := range c.PossibleMoves() {
+		position := boardState.GetPosition(move)
+
+		if !position.HasChecker() {
+			position.Square.style = "possible_move"
+		}
+	}
 	// fmt.Println("yep")
 	// ctx.JSSrc.Set("value", c.Value)
+	boardState.Update()
 	return
 }
 
 // Move ...
-func (c *Checker) Move(val int) (to Position) {
+func (c *Checker) Move(val int) {
+	c.Position.Value = c.Position.Value + val
+	return
+}
+
+// NewPosition ...
+func (c *Checker) NewPosition(val int) (to Position) {
 	to = *c.Position
 	to.Value = c.Position.Value + val
 	return
 }
 
 // PossibleMoves are the positions within the board relative the checker's position
-func (c *Checker) PossibleMoves() (validMoves []Position) {
+// func (c *Checker) PossibleMoves() (validMoves []Position) {
+func (c *Checker) PossibleMoves() (validMoves []int) {
 	if c.Position.Value+7 < 63 {
-		validMoves = append(validMoves, c.Move(c.Position.Value+7))
+		validMoves = append(validMoves, c.Position.Value+7)
 	}
 	if c.Position.Value+9 < 63 {
-		validMoves = append(validMoves, c.Move(c.Position.Value+9))
+		validMoves = append(validMoves, c.Position.Value+9)
 	}
 	if c.Position.Value-7 > 0 {
-		validMoves = append(validMoves, c.Move(c.Position.Value-7))
+		validMoves = append(validMoves, c.Position.Value-7)
 	}
 	if c.Position.Value-9 > 0 {
-		validMoves = append(validMoves, c.Move(c.Position.Value-9))
+		validMoves = append(validMoves, c.Position.Value-9)
 	}
 	return
 }
