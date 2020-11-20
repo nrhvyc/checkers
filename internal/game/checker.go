@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/maxence-charriere/go-app/v7/pkg/app"
 )
 
@@ -15,28 +17,44 @@ type Checker struct {
 // Render ...
 func (c *Checker) Render() app.UI {
 	squareClasses := ""
-	if string(c.Position.Checker.Value) == "b" {
+	position := boardState.GetPosition(c.Position.Value)
+	if position.Checker.Value == "b" {
 		squareClasses += "checker-black checker"
-	} else if string(c.Position.Checker.Value) == "w" {
+	} else if position.Checker.Value == "w" {
 		squareClasses += "checker-white checker"
 	}
 
 	return app.Div().
+		OnClick(c.onClick).
 		Class(squareClasses)
-	// .OnClick()
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {
-	for _, move := range c.PossibleMoves() {
-		position := boardState.GetPosition(move)
+	// boardState.ClearHighlighted() // Clear existing highlights
 
-		if !position.HasChecker() {
-			position.Square.style = "possible_move"
-		}
-	}
-	// fmt.Println("yep")
-	// ctx.JSSrc.Set("value", c.Value)
-	boardState.Update()
+	// for _, move := range c.PossibleMoves() {
+	// 	position := boardState.GetPosition(move)
+
+	// 	if !position.HasChecker() {
+	// 		position.ToggleHighlight()
+
+	// 		console.Call("log", fmt.Sprintf("position: %v\n", position))
+	// 		console.Call("log", fmt.Sprintf("HasChecker: %v\n", position.HasChecker()))
+	// 		console.Call("log",
+	// 			fmt.Sprintf("isHighlighted: %v\n", position.isHighlighted))
+	// 	}
+	// 	position.Square.Update()
+	// }
+
+	console.Call("log", fmt.Sprintf("c.Value: %v\n", c.Value))
+
+	position := boardState.GetPosition(c.Position.Value)
+	position.Checker.Value = "b"
+
+	// console.Call("log", fmt.Sprintf("position: %v\n", boardState.Positions[37]))
+	// boardState.Update()
+	boardState.UpdateAll()
+	// c.Update()
 	return
 }
 

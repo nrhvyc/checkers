@@ -28,9 +28,6 @@ type Game struct {
 	Board game.Board
 }
 
-// GameState holds global state
-var GameState Game
-
 func pageLoad() app.UI {
 	// Check for ongoing game
 
@@ -39,10 +36,6 @@ func pageLoad() app.UI {
 }
 
 func newGame() app.UI {
-	GameState = Game{
-		Board: game.NewBoard(),
-	}
-
 	return &Game{
 		Board: game.NewBoard(),
 	}
