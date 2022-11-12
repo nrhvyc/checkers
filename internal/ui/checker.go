@@ -1,7 +1,14 @@
 package ui
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/nrhvyc/checkers/internal/api"
 )
 
 // Checker ...
@@ -39,50 +46,43 @@ func (c *Checker) Render() app.UI {
 	// }
 
 	return app.Div().
-		// OnClick(c.onClick).
+		OnClick(c.onClick).
 		Class("Checker", squareClasses)
 }
 
-// func (c *Checker) onClick(ctx app.Context, e app.Event) {
-// 	// boardState.ClearHighlighted() // Clear existing highlights
+func (c *Checker) onClick(ctx app.Context, e app.Event) {
+	possibleMovesRequest := api.PossibleMovesRequest{CheckerPosition: 17}
+	req, err := json.Marshal(possibleMovesRequest)
+	if err != nil {
+		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
+	}
 
-// 	// for _, move := range c.PossibleMoves() {
-// 	// 	position := boardState.GetPosition(move)
+	request, err := http.NewRequest("POST", "http://localhost:7790/api/checker/possible-moves",
+		bytes.NewBuffer(req))
+	if err != nil {
+		fmt.Printf("error creating request err: %s\n", err)
+	}
 
-// 	// 	if !position.HasChecker() {
-// 	// 		position.ToggleHighlight()
+	request.Header.Set("Content-Type", "application/json")
 
-// 	// 		console.Call("log", fmt.Sprintf("position: %v\n", position))
-// 	// 		console.Call("log", fmt.Sprintf("HasChecker: %v\n", position.HasChecker()))
-// 	// 		console.Call("log",
-// 	// 			fmt.Sprintf("isHighlighted: %v\n", position.isHighlighted))
-// 	// 	}
-// 	// 	position.Square.Update()
-// 	// }
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("client.Do err: %s", err)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Game OnMount() err: %s", err)
+	}
 
-// 	// console.Call("log", fmt.Sprintf("c.Value: %v\n", c.Value))
+	possibleMovesResponse := api.PossibleMovesResponse{}
+	json.Unmarshal(body, &possibleMovesResponse)
 
-// 	boardState := Board{}
-// 	ctx.GetState("board-state", &boardState)
+	fmt.Printf("PossibleMoves: %+v", possibleMovesResponse)
+}
 
-// 	position := boardState.GetPosition(c.Position.Value)
-// 	position.Checker.Value = "b"
-
-// 	boardState.UpdatePosition(c.Position.Value, position)
-
-// 	// c.Position = position
-
-// 	// console.Call("log", fmt.Sprintf("position: %v\n", boardState.Positions[37]))
-// 	// console.Call("log", fmt.Sprintf("position: %v\n", boardState.Positions[c.Position.Value]))
-// 	// boardState.Update()
-// 	// boardState.UpdateAll()
-// 	c.HTMLClasses = "checker-black checker"
-// 	c.Update()
-// 	// position.Checker.Update()
-// 	return
-// }
-
-// // Move ...
+// Move ...
 // func (c *Checker) Move(val int) {
 // 	c.Position.Value = c.Position.Value + val
 // }

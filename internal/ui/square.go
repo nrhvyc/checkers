@@ -13,6 +13,8 @@ type Square struct {
 	Value      string // b, w, or _
 	color      string
 
+	isPossibleMove bool
+
 	style string
 }
 
@@ -39,7 +41,7 @@ func (s *Square) Render() app.UI {
 	return app.Div().Class("Square", s.color).Body(
 		// app.Text(position)
 		app.If(s.hasChecker, s.Checker.Render()),
-		// app.If(s.Position.isHighlighted, app.Div().Class("possible_move")),
+		app.If(s.isPossibleMove, app.Div().Class("possible_move")),
 	)
 }
 
