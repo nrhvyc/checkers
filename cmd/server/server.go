@@ -37,6 +37,7 @@ func main() {
 
 	// Register API Routes
 	mux.HandleFunc("/api/game/state", api.GameStateHandler)
+	mux.HandleFunc("/api/checker/possible-moves", api.PossibleMovesHandler)
 
 	// Register WASM Routes
 	mux.Handle("/", appHandler)

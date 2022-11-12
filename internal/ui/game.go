@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/nrhvyc/checkers/internal/game"
 )
@@ -39,22 +37,6 @@ type GameStateResponse struct {
 
 func (g *Game) OnMount(ctx app.Context) {
 	initGameUI()
-	fmt.Printf("game UI state: %+v\n", g)
-	// fmt.Println("testing OnMount")
-	// resp, err := http.Get("http://localhost:7790/api/game/state")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer resp.Body.Close()
-	// body, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	fmt.Printf("Game OnMount() err: %s", err)
-	// }
-	// gameStateResponse := GameStateResponse{}
-	// json.Unmarshal(body, &gameStateResponse)
-
-	// g.Board.State = gameStateResponse.Game.Board.State
-	// g.Board.calculatePositions()
 }
 
 // Render ...
