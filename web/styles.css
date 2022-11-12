@@ -1,3 +1,7 @@
+body.vsc-initialized {
+    background-color: black;
+}
+
 .row {
     flex-direction: row;
     display: flex;

@@ -80,6 +80,10 @@ func (c *Checker) onClick(ctx app.Context, e app.Event) {
 	json.Unmarshal(body, &possibleMovesResponse)
 
 	fmt.Printf("PossibleMoves: %+v", possibleMovesResponse)
+
+	for _, possibleMove := range possibleMovesResponse.PossiblePositions {
+		UIGameState.Board.Positions[possibleMove].Square.isPossibleMove = true
+	}
 }
 
 // Move ...
