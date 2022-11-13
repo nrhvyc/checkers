@@ -8,28 +8,13 @@ import (
 // Game ...
 type Game struct {
 	app.Compo
-	Board Board
+
+	Board              Board
+	PossiblePositions  map[int]bool // map[location]bool locations highlighted for a possible move
+	LastCheckerClicked int          // location of the last checker clicked
 }
 
-// func (g Game) pageLoad() Game {
-// 	// Check for ongoing game
-
-// 	// Otherwise load new game
-// 	return newGame()
-// }
-
-// func NewGame() *Game {
-// 	return &Game{Board: Board{}.}
-// }
-
-func (g *Game) OnPreRender(ctx app.Context) {
-	// fmt.Printf("Before: %+v\n", g)
-	// g.Board.State = game.GameState.Board.State
-	// fmt.Println()
-	// fmt.Println()
-	// fmt.Printf("After NewBoard(): %+v\n", g)
-	// ctx.SetState("game", g)
-}
+// func (g *Game) OnPreRender(ctx app.Context) {}
 
 type GameStateResponse struct {
 	Game game.Game `json:"game"`

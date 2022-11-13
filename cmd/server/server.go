@@ -10,26 +10,13 @@ import (
 	"github.com/nrhvyc/checkers/internal/ui"
 )
 
-// type hello struct {
-// 	app.Compo
-// }
-
-// // The Render method is where the component appearance is defined. Here, a
-// // "Hello World!" is displayed as a heading.
-// func (h *hello) Render() app.UI {
-// 	return app.H1().Text("Hello World!")
-// }
-
 func main() {
 	appHandler := &app.Handler{
 		Title:  "Checkers",
 		Styles: []string{"/web/styles.css"},
 	}
 
-	// g := ui.NewGame()
-
 	app.Route("/", &ui.Game{})
-	// app.Route("/", &hello{})
 
 	app.RunWhenOnBrowser()
 
@@ -38,6 +25,7 @@ func main() {
 	// Register API Routes
 	mux.HandleFunc("/api/game/state", api.GameStateHandler)
 	mux.HandleFunc("/api/checker/possible-moves", api.PossibleMovesHandler)
+	mux.HandleFunc("/api/checker/move", api.CheckerMoveHandler)
 
 	// Register WASM Routes
 	mux.Handle("/", appHandler)

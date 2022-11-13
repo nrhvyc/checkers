@@ -2,6 +2,14 @@ package game
 
 var GameState *Game
 
+// _b_b_b_b
+// b_b_b_b_
+// ___b_b_b
+// b_______
+// ________
+// w_w_w_w_
+// _w_w_w_w
+// w_w_w_w_
 func NewGame() *Game {
 	return &Game{
 		Board: Board{

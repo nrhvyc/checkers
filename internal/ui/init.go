@@ -9,7 +9,7 @@ import (
 
 // var console = js.Global().Get("console")
 
-// boardState holds global state
+// UIGameState holds global state
 var UIGameState Game
 
 var hasLoaded bool
@@ -33,5 +33,6 @@ func initGameUI() {
 	json.Unmarshal(body, &gameStateResponse)
 
 	UIGameState.Board.State = gameStateResponse.Game.Board.State
+	UIGameState.PossiblePositions = make(map[int]bool)
 	UIGameState.Board.calculatePositions()
 }

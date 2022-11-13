@@ -1,7 +1,14 @@
 package ui
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/nrhvyc/checkers/internal/api"
 )
 
 // Square ...
@@ -13,7 +20,7 @@ type Square struct {
 	Value      string // b, w, or _
 	color      string
 
-	isPossibleMove bool
+	location int // index in UIGameState.Game.Board.Position[location]
 
 	style string
 }
@@ -41,7 +48,9 @@ func (s *Square) Render() app.UI {
 	return app.Div().Class("Square", s.color).Body(
 		// app.Text(position)
 		app.If(s.hasChecker, s.Checker.Render()),
-		app.If(s.isPossibleMove, app.Div().Class("possible_move")),
+		app.If(
+			UIGameState.PossiblePositions[s.location],
+			app.Div().Class("possible_move").OnClick(s.onPossibleMoveClick)),
 	)
 }
 
@@ -56,4 +65,47 @@ func (s *Square) OnClick(ctx app.Context, e app.Event) {
 	// ctx.JSSrc.
 
 	s.Update()
+}
+
+func (s *Square) onPossibleMoveClick(ctx app.Context, e app.Event) {
+	makeMove(UIGameState.LastCheckerClicked, s.location)
+}
+
+func makeMove(from, to int) {
+	checkerMoveRequest := api.CheckerMoveRequest{
+		From: from,
+		To:   to,
+	}
+	req, err := json.Marshal(checkerMoveRequest)
+	if err != nil {
+		fmt.Printf("error marshalling MoveRequest err: %s", err)
+	}
+
+	request, err := http.NewRequest("POST", "http://localhost:7790/api/checker/move",
+		bytes.NewBuffer(req))
+	if err != nil {
+		fmt.Printf("error creating request err: %s\n", err)
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("client.Do err: %s", err)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Game OnMount() err: %s", err)
+	}
+
+	checkerMoveResponse := api.CheckerMoveResponse{}
+	json.Unmarshal(body, &checkerMoveResponse)
+
+	fmt.Printf("PossibleMoves: %+v", checkerMoveResponse)
+
+	UIGameState.PossiblePositions = make(map[int]bool)
+	UIGameState.Board.State = checkerMoveResponse.GameState
+	UIGameState.Board.calculatePositions()
 }

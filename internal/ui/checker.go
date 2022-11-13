@@ -14,7 +14,8 @@ import (
 // Checker ...
 type Checker struct {
 	app.Compo
-	// Position *Position
+
+	location int // index in UIGameState.Game.Board.Position[location]
 
 	Value string // b, w, or _
 
@@ -51,7 +52,11 @@ func (c *Checker) Render() app.UI {
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {
-	possibleMovesRequest := api.PossibleMovesRequest{CheckerPosition: 17}
+	updatePossiblePositions(c.location)
+}
+
+func updatePossiblePositions(checkerPosition int) {
+	possibleMovesRequest := api.PossibleMovesRequest{CheckerPosition: checkerPosition}
 	req, err := json.Marshal(possibleMovesRequest)
 	if err != nil {
 		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
@@ -81,8 +86,10 @@ func (c *Checker) onClick(ctx app.Context, e app.Event) {
 
 	fmt.Printf("PossibleMoves: %+v", possibleMovesResponse)
 
+	UIGameState.LastCheckerClicked = checkerPosition
+	UIGameState.PossiblePositions = make(map[int]bool)
 	for _, possibleMove := range possibleMovesResponse.PossiblePositions {
-		UIGameState.Board.Positions[possibleMove].Square.isPossibleMove = true
+		UIGameState.PossiblePositions[possibleMove] = true
 	}
 }
 

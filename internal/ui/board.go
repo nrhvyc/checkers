@@ -11,39 +11,10 @@ type Board struct {
 	app.Compo
 	State     string
 	Positions [64]Position
-	// HasUpdatedPositions bool
 }
-
-// NewBoard creates a board with pieces in the starting state
-// func NewBoard() Board {
-// 	b := Board{
-// 		State: "_b_b_b_bb_b_b_b__b_b_b_b________________w_w_w_w__w_w_w_ww_w_w_w_",
-// 		// state: "_b_b_b_b
-// 		// 		b_b_b_b_
-// 		// 		_b_b_b_b
-// 		// 		________
-// 		// 		________
-// 		// 		w_w_w_w_
-// 		// 		_w_w_w_w
-// 		// 		w_w_w_w_",
-// 	}
-
-// 	b.calculatePositions()
-
-// 	return b
-// }
 
 func (b *Board) OnMount(ctx app.Context) {
 	initGameUI()
-	// ctx.ObserveState("board").Value(&g.Board)
-	// fmt.Println("Board OnMount")
-	// game := Game{}
-	// ctx.GetState("game", &game)
-	// b.State = game.Board.State
-	// b.Positions = game.Board.Positions
-	// b.HasUpdatedPositions = game.Board.HasUpdatedPositions
-	// fmt.Printf("Board OnMount: %+v\n", b)
-	// fmt.Printf("OnMount Game State: %+v\n", g)
 }
 
 // Render ...
@@ -88,7 +59,8 @@ func (b *Board) calculatePositions() {
 	for i, value := range strings.Split(b.State, "") {
 		b.Positions[i] = Position{Value: i}
 		b.Positions[i].Square = Square{
-			Value: value,
+			Value:    value,
+			location: i,
 		}
 
 		if darkMap[i] {
@@ -105,7 +77,8 @@ func (b *Board) calculatePositions() {
 		}
 
 		b.Positions[i].Square.Checker = Checker{
-			Value: string(value),
+			Value:    string(value),
+			location: i,
 		}
 	}
 }
