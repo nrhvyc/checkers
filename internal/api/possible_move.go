@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/nrhvyc/checkers/internal/game"
 )
 
 type PossibleMovesRequest struct {
@@ -26,7 +28,7 @@ func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	resp := PossibleMovesResponse{
-		PossiblePositions: []int{24, 26},
+		PossiblePositions: game.GameState.PossibleMoves(request.CheckerPosition),
 	}
 
 	json.NewEncoder(w).Encode(resp)
