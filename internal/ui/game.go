@@ -2,7 +2,6 @@ package ui
 
 import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/nrhvyc/checkers/internal/game"
 )
 
 // Game ...
@@ -16,9 +15,9 @@ type Game struct {
 
 // func (g *Game) OnPreRender(ctx app.Context) {}
 
-type GameStateResponse struct {
-	Game game.Game `json:"game"`
-}
+// type GameStateResponse struct {
+// 	GameState string `json:"gameState"`
+// }
 
 func (g *Game) OnMount(ctx app.Context) {
 	initGameUI()

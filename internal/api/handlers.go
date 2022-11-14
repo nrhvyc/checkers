@@ -10,7 +10,7 @@ import (
 
 type GameStateRequest struct{}
 type GameStateResponse struct {
-	Game game.Game `json:"game"`
+	GameState string `json:"gameState"`
 }
 
 func GameStateHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +26,7 @@ func GameStateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	resp := GameStateResponse{
-		Game: *game.GameState,
+		GameState: game.GameState.StateToString(),
 	}
 
 	json.NewEncoder(w).Encode(resp)

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/nrhvyc/checkers/internal/api"
 )
 
 // var console = js.Global().Get("console")
@@ -29,10 +31,10 @@ func initGameUI() {
 	if err != nil {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
-	gameStateResponse := GameStateResponse{}
+	gameStateResponse := api.GameStateResponse{}
 	json.Unmarshal(body, &gameStateResponse)
 
-	UIGameState.Board.State = gameStateResponse.Game.Board.State
+	UIGameState.Board.State = gameStateResponse.GameState
 	UIGameState.PossiblePositions = make(map[int]bool)
 	UIGameState.Board.calculatePositions()
 }

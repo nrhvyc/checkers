@@ -34,7 +34,7 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 	resp := CheckerMoveResponse{
 		WasAllowed: true,
 		// GameState:  "_b_b_b_bb_b_b_b____b_b_bb_______________w_w_w_w__w_w_w_ww_w_w_w_",
-		GameState: game.GameState.Board.State,
+		GameState: game.GameState.StateToString(),
 	}
 
 	json.NewEncoder(w).Encode(resp)
