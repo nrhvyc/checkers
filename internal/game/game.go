@@ -17,6 +17,11 @@ type Board struct {
 	// WhiteCheckerPositions map[string]int // map[color]location
 }
 
+type Move struct {
+	ToLocation       int
+	CheckersCaptured []int
+}
+
 func (g *Game) Move(from, to int) {
 	g.Board.Positions[to/8][to%8] = g.Board.Positions[from/8][from%8]
 	g.Board.Positions[from/8][from%8] = "_"
@@ -30,7 +35,6 @@ func (g *Game) StateToString() string {
 		}
 	}
 	out := strings.Join(state, "")
-	fmt.Printf("out: %s\n", out)
 	return out
 }
 
@@ -45,37 +49,91 @@ func (g *Game) SetStateFromString() {
 	fmt.Printf("g.Board.Positions: %+v\n", g.Board.Positions)
 }
 
-func (g *Game) PossibleMoves(checkerLocation int) []int {
-	i := checkerLocation / 8
-	j := checkerLocation % 8
+func (g *Game) PossibleMoves(checkerLocation int) []Move {
+	r := checkerLocation / 8
+	c := checkerLocation % 8
+	loc := func(r, c int) int {
+		return (r)*8 + (c)
+	}
 
-	locations := []int{}
+	locations := []Move{}
 
-	if g.Board.Positions[i][j] == "b" {
+	if g.Board.Positions[r][c] == "b" {
 		// Black Moves
-		if i+1 < 8 {
-			if j-1 >= 0 && g.Board.isEmpty(i+1, j-1) {
-				locations = append(locations, (i+1)*8+(j-1))
+		if r+1 < 8 {
+			if c-1 > 0 && g.Board.isEmptyAndValid(r+1, c-1) {
+				locations = append(locations, Move{
+					ToLocation: loc(r+1, c-1),
+				})
 			}
-			if j+1 < 8 && g.Board.isEmpty(i+1, j+1) {
-				locations = append(locations, (i+1)*8+(j+1))
+			if c+1 < 8 && g.Board.isEmptyAndValid(r+1, c+1) {
+				locations = append(locations, Move{
+					ToLocation: loc(r+1, c+1),
+				})
+			}
+			if g.Board.containsWhiteAndValid(r+1, c-1) && g.Board.isEmptyAndValid(r+2, c-2) {
+				locations = append(locations, Move{
+					ToLocation:       loc(r+2, c-2),
+					CheckersCaptured: []int{loc(r+1, c-1)},
+				})
+			}
+			if g.Board.containsWhiteAndValid(r+1, c+1) && g.Board.isEmptyAndValid(r+2, c+2) {
+				locations = append(locations, Move{
+					ToLocation:       loc(r+2, c+2),
+					CheckersCaptured: []int{loc(r+1, c+1)},
+				})
 			}
 		}
 	} else {
 		// White Moves
-		if i-1 >= 0 {
-			if j-1 >= 0 && g.Board.isEmpty(i-1, j-1) {
-				locations = append(locations, (i-1)*8+(j-1))
+		if r-1 >= 0 {
+			if c-1 > 0 && g.Board.isEmptyAndValid(r-1, c-1) {
+				locations = append(locations, Move{
+					ToLocation: loc(r-1, c-1),
+				})
 			}
-			if j+1 < 8 && g.Board.isEmpty(i-1, j+1) {
-				locations = append(locations, (i-1)*8+(j+1))
+			if c+1 < 8 && g.Board.isEmptyAndValid(r-1, c+1) {
+				locations = append(locations, Move{
+					ToLocation: loc(r-1, c+1),
+				})
+			}
+			if g.Board.containsBlackAndValid(r-1, c-1) && g.Board.isEmptyAndValid(r-2, c-2) {
+				locations = append(locations, Move{
+					ToLocation:       loc(r-2, c-2),
+					CheckersCaptured: []int{loc(r-1, c-1)},
+				})
+			}
+			if g.Board.containsBlackAndValid(r-1, c+1) && g.Board.isEmptyAndValid(r-2, c+2) {
+				locations = append(locations, Move{
+					ToLocation:       loc(r-2, c+2),
+					CheckersCaptured: []int{loc(r-1, c+1)},
+				})
 			}
 		}
 	}
 
+	fmt.Printf("PossibleMoves: %+v\n", locations)
+
 	return locations
 }
 
-func (b *Board) isEmpty(i, j int) bool {
-	return b.Positions[i][j] == "_"
+func (b *Board) isEmptyAndValid(r, c int) bool {
+	if r > 7 || r < 0 || c > 7 || c < 0 {
+		return false
+	}
+	return b.Positions[r][c] == "_"
+}
+
+func (b *Board) containsWhiteAndValid(r, c int) bool {
+	if r > 7 || r < 0 || c > 7 || c < 0 {
+		return false
+	}
+	return b.Positions[r][c] == "w"
+}
+
+func (b *Board) containsBlackAndValid(r, c int) bool {
+	if r > 7 || r < 0 || c > 7 || c < 0 {
+		return false
+	}
+	return b.Positions[r][c] == "b"
 }

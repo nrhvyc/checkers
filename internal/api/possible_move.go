@@ -27,8 +27,13 @@ func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
+	moves := game.GameState.PossibleMoves(request.CheckerPosition)
+	locs := []int{}
+	for _, m := range moves {
+		locs = append(locs, m.ToLocation)
+	}
 	resp := PossibleMovesResponse{
-		PossiblePositions: game.GameState.PossibleMoves(request.CheckerPosition),
+		PossiblePositions: locs,
 	}
 
 	json.NewEncoder(w).Encode(resp)
