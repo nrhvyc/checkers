@@ -12,7 +12,7 @@ type PossibleMovesRequest struct {
 	CheckerPosition int `json:"checkerPosition"` // 17
 }
 type PossibleMovesResponse struct {
-	PossiblePositions []int `json:"possiblePositions"` // 24, 26
+	Moves []game.Move `json:"moves"` // 24, 26
 }
 
 func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,12 +28,8 @@ func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	moves := game.GameState.PossibleMoves(request.CheckerPosition)
-	locs := []int{}
-	for _, m := range moves {
-		locs = append(locs, m.ToLocation)
-	}
 	resp := PossibleMovesResponse{
-		PossiblePositions: locs,
+		Moves: moves,
 	}
 
 	json.NewEncoder(w).Encode(resp)

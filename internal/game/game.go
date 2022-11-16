@@ -61,12 +61,14 @@ func (g *Game) PossibleMoves(checkerLocation int) []Move {
 	if g.Board.Positions[r][c] == "b" {
 		// Black Moves
 		if r+1 < 8 {
-			if c-1 > 0 && g.Board.isEmptyAndValid(r+1, c-1) {
+			// if c-1 > 0 && g.Board.isEmptyAndValid(r+1, c-1) {
+			if g.Board.isEmptyAndValid(r+1, c-1) {
 				locations = append(locations, Move{
 					ToLocation: loc(r+1, c-1),
 				})
 			}
-			if c+1 < 8 && g.Board.isEmptyAndValid(r+1, c+1) {
+			// if c+1 < 8 && g.Board.isEmptyAndValid(r+1, c+1) {
+			if g.Board.isEmptyAndValid(r+1, c+1) {
 				locations = append(locations, Move{
 					ToLocation: loc(r+1, c+1),
 				})

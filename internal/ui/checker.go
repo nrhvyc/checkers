@@ -88,8 +88,8 @@ func updatePossiblePositions(checkerPosition int) {
 
 	UIGameState.LastCheckerClicked = checkerPosition
 	UIGameState.PossiblePositions = make(map[int]bool)
-	for _, possibleMove := range possibleMovesResponse.PossiblePositions {
-		UIGameState.PossiblePositions[possibleMove] = true
+	for _, possibleMove := range possibleMovesResponse.Moves {
+		UIGameState.PossiblePositions[possibleMove.ToLocation] = true
 	}
 }
 
