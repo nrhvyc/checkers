@@ -9,8 +9,7 @@ import (
 )
 
 type CheckerMoveRequest struct {
-	From int `json:"from"`
-	To   int `json:"to"`
+	Move game.Move `json:"move"`
 }
 type CheckerMoveResponse struct {
 	WasAllowed bool
@@ -29,7 +28,8 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	game.GameState.Move(request.From, request.To)
+	// game.GameState.Move(request.From, request.To)
+	game.GameState.Move(request.Move)
 
 	resp := CheckerMoveResponse{
 		WasAllowed: true,

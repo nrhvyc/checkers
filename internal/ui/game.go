@@ -2,15 +2,18 @@ package ui
 
 import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/nrhvyc/checkers/internal/game"
 )
 
 // Game ...
 type Game struct {
 	app.Compo
 
-	Board              Board
-	PossiblePositions  map[int]bool // map[location]bool locations highlighted for a possible move
-	LastCheckerClicked int          // location of the last checker clicked
+	Board Board
+	// PossibleMoves  map[int]bool // map[location]bool locations highlighted for a possible move
+	PossibleMoves map[int]*game.Move // map[location]bool locations highlighted for a possible move
+	// Moves  map[int]bool // map[location]bool locations highlighted for a possible move
+	LastCheckerClicked int // location of the last checker clicked
 }
 
 // func (g *Game) OnPreRender(ctx app.Context) {}

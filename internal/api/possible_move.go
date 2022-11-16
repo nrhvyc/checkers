@@ -32,5 +32,7 @@ func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
 		Moves: moves,
 	}
 
+	fmt.Printf("PossibleMovesHandler response: %+v\n", resp)
+
 	json.NewEncoder(w).Encode(resp)
 }

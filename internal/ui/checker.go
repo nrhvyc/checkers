@@ -9,6 +9,7 @@ import (
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/nrhvyc/checkers/internal/api"
+	"github.com/nrhvyc/checkers/internal/game"
 )
 
 // Checker ...
@@ -52,10 +53,10 @@ func (c *Checker) Render() app.UI {
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {
-	updatePossiblePositions(c.location)
+	updatePossibleMoves(c.location)
 }
 
-func updatePossiblePositions(checkerPosition int) {
+func updatePossibleMoves(checkerPosition int) {
 	possibleMovesRequest := api.PossibleMovesRequest{CheckerPosition: checkerPosition}
 	req, err := json.Marshal(possibleMovesRequest)
 	if err != nil {
@@ -84,12 +85,17 @@ func updatePossiblePositions(checkerPosition int) {
 	possibleMovesResponse := api.PossibleMovesResponse{}
 	json.Unmarshal(body, &possibleMovesResponse)
 
-	fmt.Printf("PossibleMoves: %+v", possibleMovesResponse)
+	fmt.Printf("updatePossibleMoves() PossibleMoves: %+v\n", possibleMovesResponse)
 
 	UIGameState.LastCheckerClicked = checkerPosition
-	UIGameState.PossiblePositions = make(map[int]bool)
+	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	for _, possibleMove := range possibleMovesResponse.Moves {
-		UIGameState.PossiblePositions[possibleMove.ToLocation] = true
+		possible := possibleMove
+		UIGameState.PossibleMoves[possibleMove.Path[len(possibleMove.Path)-1]] = &possible
+		fmt.Printf("UIGameState.PossibleMoves: [%d]%+v\n", possibleMove.Path[len(possibleMove.Path)-1], possibleMove)
+	}
+	for k, v := range UIGameState.PossibleMoves {
+		fmt.Printf("UIGameState.PossibleMoves[%d]: %+v\n", k, v)
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/nrhvyc/checkers/internal/api"
+	"github.com/nrhvyc/checkers/internal/game"
 )
 
 // var console = js.Global().Get("console")
@@ -35,6 +36,6 @@ func initGameUI() {
 	json.Unmarshal(body, &gameStateResponse)
 
 	UIGameState.Board.State = gameStateResponse.GameState
-	UIGameState.PossiblePositions = make(map[int]bool)
+	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	UIGameState.Board.calculatePositions()
 }
