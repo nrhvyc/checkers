@@ -69,52 +69,7 @@ func (s *Square) OnClick(ctx app.Context, e app.Event) {
 }
 
 func (s *Square) onPossibleMoveClick(ctx app.Context, e app.Event) {
-	fmt.Printf("onPossibleMoveClick(%d,%d)\n", UIGameState.LastCheckerClicked, s.location)
-	fmt.Printf("UIGameState.LastCheckerClicked: %d\n", UIGameState.LastCheckerClicked)
-	fmt.Printf("s.location: %d\n", s.location)
-	// makeMove(UIGameState.LastCheckerClicked, s.location)
-
-	from := UIGameState.LastCheckerClicked
-	to := s.location
-
-	fmt.Printf("square makeMove() from: %d to: %d\n", from, to)
-	fmt.Printf("Am I crazy???? to: %d\n", to)
-	fmt.Printf("to: %d Move:%+v\n", to, *UIGameState.PossibleMoves[to])
-	checkerMoveRequest := api.CheckerMoveRequest{
-		Move: *UIGameState.PossibleMoves[to],
-	}
-	req, err := json.Marshal(checkerMoveRequest)
-	if err != nil {
-		fmt.Printf("error marshalling MoveRequest err: %s", err)
-	}
-
-	request, err := http.NewRequest("POST", "http://localhost:7790/api/checker/move",
-		bytes.NewBuffer(req))
-	if err != nil {
-		fmt.Printf("error creating request err: %s\n", err)
-	}
-
-	request.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(request)
-	if err != nil {
-		fmt.Printf("client.Do err: %s", err)
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Printf("Game OnMount() err: %s", err)
-	}
-
-	checkerMoveResponse := api.CheckerMoveResponse{}
-	json.Unmarshal(body, &checkerMoveResponse)
-
-	fmt.Printf("makeMove() PossibleMoves: %+v", checkerMoveResponse)
-
-	UIGameState.PossibleMoves = make(map[int]*game.Move)
-	UIGameState.Board.State = checkerMoveResponse.GameState
-	UIGameState.Board.calculatePositions()
+	makeMove(UIGameState.LastCheckerClicked, s.location)
 }
 
 func makeMove(from, to int) {
