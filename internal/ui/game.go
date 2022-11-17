@@ -13,7 +13,8 @@ type Game struct {
 	// PossibleMoves  map[int]bool // map[location]bool locations highlighted for a possible move
 	PossibleMoves map[int]*game.Move // map[location]bool locations highlighted for a possible move
 	// Moves  map[int]bool // map[location]bool locations highlighted for a possible move
-	LastCheckerClicked int // location of the last checker clicked
+	LastCheckerClicked int  // location of the last checker clicked
+	PlayerTurn         bool // false = black's turn; true = white's turn
 }
 
 // func (g *Game) OnPreRender(ctx app.Context) {}

@@ -33,21 +33,7 @@ func (s *Square) OnMount(ctx app.Context) {
 
 // Render ...
 func (s *Square) Render() app.UI {
-	// s.style = color
-
-	// position := boardState.GetPosition(s.position.Value)
-
-	// if !s.hasChecker {
-	// 	return app.Div().Class("Square", s.color)
-	// }
-
-	// if position.GetValue() == 37 {
-	// 	console.Call("log", fmt.Sprintf("position 37: %v\n", position.isHighlighted))
-	// }
-
-	// return app.Div().Class(s.style).Text("Square")
 	return app.Div().Class("Square", s.color).Body(
-		// app.Text(position)
 		app.If(s.hasChecker, s.Checker.Render()),
 		app.If(
 			UIGameState.PossibleMoves[s.location] != nil,
@@ -62,9 +48,6 @@ func (s *Square) SetStyle(style string) {
 
 // OnClick ...
 func (s *Square) OnClick(ctx app.Context, e app.Event) {
-	// ctx.JSSrc.Set("value", s.position.Value)
-	// ctx.JSSrc.
-
 	s.Update()
 }
 
@@ -108,5 +91,6 @@ func makeMove(from, to int) {
 
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	UIGameState.Board.State = checkerMoveResponse.GameState
+	UIGameState.PlayerTurn = checkerMoveResponse.PlayerTurn
 	UIGameState.Board.calculatePositions()
 }

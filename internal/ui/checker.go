@@ -43,13 +43,15 @@ func (c *Checker) Render() app.UI {
 		squareClasses += "checker-white checker"
 	}
 
-	// if position.Value == 37 {
-	// 	console.Call("log", fmt.Sprintf("rendering Checker @ Position: %v\n", position.Value))
-	// }
-
-	return app.Div().
-		OnClick(c.onClick).
-		Class("Checker", squareClasses)
+	if (c.Value == "b" && !UIGameState.PlayerTurn) || (c.Value == "w" && UIGameState.PlayerTurn) {
+		squareClasses += " clickable"
+		return app.Div().
+			OnClick(c.onClick).
+			Class("Checker", squareClasses)
+	} else {
+		return app.Div().
+			Class("Checker", squareClasses)
+	}
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {

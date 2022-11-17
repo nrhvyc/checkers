@@ -6,7 +6,8 @@ import (
 )
 
 type Game struct {
-	Board Board
+	Board      Board
+	PlayerTurn bool // false = black's turn; true = white's turn
 }
 
 type Board struct {
@@ -24,9 +25,6 @@ type Move struct {
 
 // func (g *Game) Move(from, to int) {
 func (g *Game) Move(move Move) {
-	// g.Board.Positions[to/8][to%8] = g.Board.Positions[from/8][from%8]
-	// g.Board.Positions[from/8][from%8] = "_"
-
 	from := move.Path[0]
 	to := move.Path[len(move.Path)-1]
 	fmt.Printf("game.Move() from: %d to: %d", from, to)
@@ -38,6 +36,12 @@ func (g *Game) Move(move Move) {
 	for _, captureLocation := range move.CheckersCaptured {
 		fmt.Printf("captureLocation: %d", captureLocation)
 		g.Board.Positions[captureLocation/8][captureLocation%8] = "_"
+	}
+
+	if g.PlayerTurn {
+		g.PlayerTurn = false
+	} else {
+		g.PlayerTurn = true
 	}
 }
 
