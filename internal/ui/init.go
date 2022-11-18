@@ -36,6 +36,7 @@ func initGameUI() {
 	json.Unmarshal(body, &gameStateResponse)
 
 	UIGameState.Board.State = gameStateResponse.GameState
+	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	UIGameState.Board.calculatePositions()
 }

@@ -12,9 +12,10 @@ type CheckerMoveRequest struct {
 	Move game.Move `json:"move"`
 }
 type CheckerMoveResponse struct {
-	WasAllowed bool
-	GameState  string
-	PlayerTurn bool // false = black's turn; true = white's turn
+	WasAllowed    bool
+	GameState     string
+	PlayerTurn    bool // false = black's turn; true = white's turn
+	FollowUpMoves []game.Move
 }
 
 func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,13 +31,14 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	// game.GameState.Move(request.From, request.To)
-	game.GameState.Move(request.Move)
+	followUpMoves := game.GameState.Move(request.Move)
 
 	resp := CheckerMoveResponse{
 		WasAllowed: true,
 		// GameState:  "_b_b_b_bb_b_b_b____b_b_bb_______________w_w_w_w__w_w_w_ww_w_w_w_",
-		GameState:  game.GameState.StateToString(),
-		PlayerTurn: game.GameState.PlayerTurn,
+		GameState:     game.GameState.StateToString(),
+		PlayerTurn:    game.GameState.PlayerTurn,
+		FollowUpMoves: followUpMoves,
 	}
 
 	json.NewEncoder(w).Encode(resp)

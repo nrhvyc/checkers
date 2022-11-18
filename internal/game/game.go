@@ -23,8 +23,7 @@ type Move struct {
 	CheckersCaptured []int
 }
 
-// func (g *Game) Move(from, to int) {
-func (g *Game) Move(move Move) {
+func (g *Game) Move(move Move) (followUpMoves []Move) {
 	from := move.Path[0]
 	to := move.Path[len(move.Path)-1]
 	fmt.Printf("game.Move() from: %d to: %d", from, to)
@@ -32,10 +31,16 @@ func (g *Game) Move(move Move) {
 	g.Board.Positions[to/8][to%8] = g.Board.Positions[from/8][from%8]
 	g.Board.Positions[from/8][from%8] = "_"
 
-	// capture checkers
-	for _, captureLocation := range move.CheckersCaptured {
-		fmt.Printf("captureLocation: %d", captureLocation)
-		g.Board.Positions[captureLocation/8][captureLocation%8] = "_"
+	// remove most recent checker capture
+	if lenCheckers := len(move.CheckersCaptured); lenCheckers > 0 {
+		fmt.Printf("captureLocation: %d", move.CheckersCaptured[lenCheckers-1])
+		g.Board.Positions[move.CheckersCaptured[lenCheckers-1]/8][move.CheckersCaptured[lenCheckers-1]%8] = "_"
+
+		_, captureMoves := g.PossibleMoves(to)
+		if len(captureMoves) > 0 {
+			return captureMoves
+		}
+
 	}
 
 	if g.PlayerTurn {
@@ -43,6 +48,7 @@ func (g *Game) Move(move Move) {
 	} else {
 		g.PlayerTurn = true
 	}
+	return
 }
 
 func (g *Game) StateToString() string {
@@ -67,40 +73,36 @@ func (g *Game) SetStateFromString() {
 	fmt.Printf("g.Board.Positions: %+v\n", g.Board.Positions)
 }
 
-func (g *Game) PossibleMoves(checkerLocation int) []Move {
+func (g *Game) PossibleMoves(checkerLocation int) (nonCaptureMoves, captureMoves []Move) {
 	r := checkerLocation / 8
 	c := checkerLocation % 8
 	loc := func(r, c int) int {
 		return (r)*8 + (c)
 	}
 
-	locations := []Move{}
-
 	if g.Board.Positions[r][c] == "b" {
 		// Black Moves
 		if r+1 < 8 {
-			// if c-1 > 0 && g.Board.isEmptyAndValid(r+1, c-1) {
 			if g.Board.isEmptyAndValid(r+1, c-1) {
-				locations = append(locations, Move{
+				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r+1, c-1)},
 				})
 			}
-			// if c+1 < 8 && g.Board.isEmptyAndValid(r+1, c+1) {
 			if g.Board.isEmptyAndValid(r+1, c+1) {
-				locations = append(locations, Move{
+				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r+1, c+1)},
 				})
 			}
 			if g.Board.containsWhiteAndValid(r+1, c-1) && g.Board.isEmptyAndValid(r+2, c-2) {
-				locations = append(locations, Move{
+				captureMoves = append(captureMoves, Move{
 					Path:             []int{loc(r, c), loc(r+2, c-2)},
-					CheckersCaptured: []int{loc(r, c), loc(r+1, c-1)},
+					CheckersCaptured: []int{loc(r+1, c-1)},
 				})
 			}
 			if g.Board.containsWhiteAndValid(r+1, c+1) && g.Board.isEmptyAndValid(r+2, c+2) {
-				locations = append(locations, Move{
+				captureMoves = append(captureMoves, Move{
 					Path:             []int{loc(r, c), loc(r+2, c+2)},
-					CheckersCaptured: []int{loc(r, c), loc(r+1, c+1)},
+					CheckersCaptured: []int{loc(r+1, c+1)},
 				})
 			}
 		}
@@ -108,33 +110,33 @@ func (g *Game) PossibleMoves(checkerLocation int) []Move {
 		// White Moves
 		if r-1 >= 0 {
 			if c-1 > 0 && g.Board.isEmptyAndValid(r-1, c-1) {
-				locations = append(locations, Move{
+				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r-1, c-1)},
 				})
 			}
 			if c+1 < 8 && g.Board.isEmptyAndValid(r-1, c+1) {
-				locations = append(locations, Move{
+				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r-1, c+1)},
 				})
 			}
 			if g.Board.containsBlackAndValid(r-1, c-1) && g.Board.isEmptyAndValid(r-2, c-2) {
-				locations = append(locations, Move{
+				captureMoves = append(captureMoves, Move{
 					Path:             []int{loc(r, c), loc(r-2, c-2)},
-					CheckersCaptured: []int{loc(r, c), loc(r-1, c-1)},
+					CheckersCaptured: []int{loc(r-1, c-1)},
 				})
 			}
 			if g.Board.containsBlackAndValid(r-1, c+1) && g.Board.isEmptyAndValid(r-2, c+2) {
-				locations = append(locations, Move{
+				captureMoves = append(captureMoves, Move{
 					Path:             []int{loc(r, c), loc(r-2, c+2)},
-					CheckersCaptured: []int{loc(r, c), loc(r-1, c+1)},
+					CheckersCaptured: []int{loc(r-1, c+1)},
 				})
 			}
 		}
 	}
 
-	fmt.Printf("PossibleMoves() PossibleMoves: %+v\n", locations)
+	fmt.Printf("PossibleMoves() nonCaptureMoves: %+v captureMoves: %+v\n", nonCaptureMoves, captureMoves)
 
-	return locations
+	return
 }
 
 func (b *Board) isEmptyAndValid(r, c int) bool {

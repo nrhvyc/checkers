@@ -90,6 +90,11 @@ func makeMove(from, to int) {
 	fmt.Printf("makeMove() PossibleMoves: %+v", checkerMoveResponse)
 
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
+	for _, possibleMove := range checkerMoveResponse.FollowUpMoves {
+		possible := possibleMove
+		UIGameState.PossibleMoves[possibleMove.Path[len(possibleMove.Path)-1]] = &possible
+		fmt.Printf("UIGameState.PossibleMoves: [%d]%+v\n", possibleMove.Path[len(possibleMove.Path)-1], possibleMove)
+	}
 	UIGameState.Board.State = checkerMoveResponse.GameState
 	UIGameState.PlayerTurn = checkerMoveResponse.PlayerTurn
 	UIGameState.Board.calculatePositions()
