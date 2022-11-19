@@ -91,7 +91,7 @@ func (g *Game) PossibleMoves(checkerLocation int) (nonCaptureMoves, captureMoves
 
 	if strings.ToLower(g.Board.Positions[r][c]) == "b" {
 		// Black Moves
-		if r+1 < 8 {
+		if r+1 < 8 || g.Board.Positions[r][c] == "B" {
 			if g.Board.isEmptyAndValid(r+1, c-1) {
 				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r+1, c-1)},
@@ -115,9 +115,33 @@ func (g *Game) PossibleMoves(checkerLocation int) (nonCaptureMoves, captureMoves
 				})
 			}
 		}
+		if g.Board.Positions[r][c] == "B" {
+			if c-1 > 0 && g.Board.isEmptyAndValid(r-1, c-1) {
+				nonCaptureMoves = append(nonCaptureMoves, Move{
+					Path: []int{loc(r, c), loc(r-1, c-1)},
+				})
+			}
+			if c+1 < 8 && g.Board.isEmptyAndValid(r-1, c+1) {
+				nonCaptureMoves = append(nonCaptureMoves, Move{
+					Path: []int{loc(r, c), loc(r-1, c+1)},
+				})
+			}
+			if g.Board.containsWhiteAndValid(r-1, c-1) && g.Board.isEmptyAndValid(r-2, c-2) {
+				captureMoves = append(captureMoves, Move{
+					Path:             []int{loc(r, c), loc(r-2, c-2)},
+					CheckersCaptured: []int{loc(r-1, c-1)},
+				})
+			}
+			if g.Board.containsWhiteAndValid(r-1, c+1) && g.Board.isEmptyAndValid(r-2, c+2) {
+				captureMoves = append(captureMoves, Move{
+					Path:             []int{loc(r, c), loc(r-2, c+2)},
+					CheckersCaptured: []int{loc(r-1, c+1)},
+				})
+			}
+		}
 	} else {
 		// White Moves
-		if r-1 >= 0 {
+		if r-1 >= 0 || g.Board.Positions[r][c] == "W" {
 			if c-1 > 0 && g.Board.isEmptyAndValid(r-1, c-1) {
 				nonCaptureMoves = append(nonCaptureMoves, Move{
 					Path: []int{loc(r, c), loc(r-1, c-1)},
@@ -138,6 +162,30 @@ func (g *Game) PossibleMoves(checkerLocation int) (nonCaptureMoves, captureMoves
 				captureMoves = append(captureMoves, Move{
 					Path:             []int{loc(r, c), loc(r-2, c+2)},
 					CheckersCaptured: []int{loc(r-1, c+1)},
+				})
+			}
+		}
+		if g.Board.Positions[r][c] == "W" {
+			if g.Board.isEmptyAndValid(r+1, c-1) {
+				nonCaptureMoves = append(nonCaptureMoves, Move{
+					Path: []int{loc(r, c), loc(r+1, c-1)},
+				})
+			}
+			if g.Board.isEmptyAndValid(r+1, c+1) {
+				nonCaptureMoves = append(nonCaptureMoves, Move{
+					Path: []int{loc(r, c), loc(r+1, c+1)},
+				})
+			}
+			if g.Board.containsBlackAndValid(r+1, c-1) && g.Board.isEmptyAndValid(r+2, c-2) {
+				captureMoves = append(captureMoves, Move{
+					Path:             []int{loc(r, c), loc(r+2, c-2)},
+					CheckersCaptured: []int{loc(r+1, c-1)},
+				})
+			}
+			if g.Board.containsBlackAndValid(r+1, c+1) && g.Board.isEmptyAndValid(r+2, c+2) {
+				captureMoves = append(captureMoves, Move{
+					Path:             []int{loc(r, c), loc(r+2, c+2)},
+					CheckersCaptured: []int{loc(r+1, c+1)},
 				})
 			}
 		}
