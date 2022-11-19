@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/nrhvyc/checkers/internal/api"
@@ -29,28 +30,32 @@ func (c *Checker) OnMount(ctx app.Context) {
 
 // Render ...
 func (c *Checker) Render() app.UI {
-	squareClasses := ""
-	if c.Value == "b" {
-		squareClasses += "checker-black checker"
+	squareClasses := []string{}
+	if strings.ToLower(c.Value) == "b" {
+		squareClasses = append(squareClasses, []string{"checker-black", "checker"}...)
 	} else if c.Value == "w" {
-		squareClasses += "checker-white checker"
+		squareClasses = append(squareClasses, []string{"checker-white", "checker"}...)
 	}
 	if c.HTMLClasses != "" {
-		squareClasses = c.HTMLClasses
-	} else if c.Value == "b" {
-		squareClasses += "checker-black checker"
-	} else if c.Value == "w" {
-		squareClasses += "checker-white checker"
+		squareClasses = append(squareClasses, c.HTMLClasses)
+	} else if strings.ToLower(c.Value) == "b" {
+		squareClasses = append(squareClasses, []string{"checker-black", "checker"}...)
+	} else if strings.ToLower(c.Value) == "w" {
+		squareClasses = append(squareClasses, []string{"checker-white", "checker"}...)
 	}
 
-	if (c.Value == "b" && !UIGameState.PlayerTurn) || (c.Value == "w" && UIGameState.PlayerTurn) {
-		squareClasses += " clickable"
+	if c.Value == "B" || c.Value == "W" {
+		squareClasses = append(squareClasses, "king")
+	}
+
+	if (strings.ToLower(c.Value) == "b" && !UIGameState.PlayerTurn) || (strings.ToLower(c.Value) == "w" && UIGameState.PlayerTurn) {
+		squareClasses = append(squareClasses, " clickable")
 		return app.Div().
 			OnClick(c.onClick).
-			Class("Checker", squareClasses)
+			Class("Checker", strings.Join(squareClasses, " "))
 	} else {
 		return app.Div().
-			Class("Checker", squareClasses)
+			Class("Checker", strings.Join(squareClasses, " "))
 	}
 }
 

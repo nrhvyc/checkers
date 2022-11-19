@@ -40,7 +40,12 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 		if len(captureMoves) > 0 {
 			return captureMoves
 		}
+	}
 
+	if to >= 56 && g.Board.Positions[to/8][to%8] == "b" {
+		g.Board.Positions[to/8][to%8] = "B"
+	} else if to <= 7 && g.Board.Positions[to/8][to%8] == "w" {
+		g.Board.Positions[to/8][to%8] = "W"
 	}
 
 	if g.PlayerTurn {
@@ -50,6 +55,10 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 	}
 	return
 }
+
+// func (b *Board) isKingPromotion(checkerLocation, r, c int) bool {
+// 	if b.state checkerLocation b.Positions[r][c] == "b"
+// }
 
 func (g *Game) StateToString() string {
 	state := make([]string, 64)
@@ -80,7 +89,7 @@ func (g *Game) PossibleMoves(checkerLocation int) (nonCaptureMoves, captureMoves
 		return (r)*8 + (c)
 	}
 
-	if g.Board.Positions[r][c] == "b" {
+	if strings.ToLower(g.Board.Positions[r][c]) == "b" {
 		// Black Moves
 		if r+1 < 8 {
 			if g.Board.isEmptyAndValid(r+1, c-1) {
@@ -150,12 +159,12 @@ func (b *Board) containsWhiteAndValid(r, c int) bool {
 	if r > 7 || r < 0 || c > 7 || c < 0 {
 		return false
 	}
-	return b.Positions[r][c] == "w"
+	return strings.ToLower(b.Positions[r][c]) == "w"
 }
 
 func (b *Board) containsBlackAndValid(r, c int) bool {
 	if r > 7 || r < 0 || c > 7 || c < 0 {
 		return false
 	}
-	return b.Positions[r][c] == "b"
+	return strings.ToLower(b.Positions[r][c]) == "b"
 }

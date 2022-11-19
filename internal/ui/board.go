@@ -70,7 +70,7 @@ func (b *Board) calculatePositions() {
 		}
 
 		// If no checker set the pointer to nil
-		if string(value) == "b" || string(value) == "w" {
+		if strings.ToLower(string(value)) == "b" || strings.ToLower(string(value)) == "w" {
 			b.Positions[i].Square.hasChecker = true
 		} else {
 			continue

@@ -40,6 +40,10 @@ body.vsc-initialized {
     cursor: pointer;
 }
 
+.king {
+    border: 2px solid rgb(252 255 0) !important;
+}
+
 .checker {
 	border-radius: 50%;
 	border: 2px solid white;
