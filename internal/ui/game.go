@@ -1,7 +1,13 @@
 package ui
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/nrhvyc/checkers/internal/api"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -18,7 +24,7 @@ type Game struct {
 	Winner             game.Winner
 }
 
-var winnerMessage = [3]string{"", "Player 1 Has Won!", "Player 2 Has Won!"}
+var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
 
 // func (g *Game) OnPreRender(ctx app.Context) {}
 
@@ -38,19 +44,44 @@ func (g *Game) Render() app.UI {
 	// fmt.Printf("RenderState: %+v\n", g)
 
 	return app.Div().Class("grid-container").Body(
+		app.Raw(`<link href="https://fonts.cdnfonts.com/css/neue-haas-grotesk-text-pro" rel="stylesheet">`),
 		app.Div().Body(
 			g.Board.Render(),
-			// app.Text(fmt.Sprintf("%+v", g)),
-			// app.Text(g.Board.HasUpdatedPositions),
-			// app.Text(g.Board.Positions),
-			// GameState,
 		),
-		app.If(winnerMsg != "",
-			app.Div().Class("winner").Body(
-				app.Div().Class("winner-text").Body(
-					app.Text(winnerMsg),
+		app.Div().Class("menu").Body(
+			app.If(winnerMsg != "",
+				app.Div().Class("winner menu-center").Body(
+					app.Div().Class("winner-text").Body(
+						app.Text(winnerMsg),
+					),
+					app.Div().Class("play-again-container").Body(
+						app.Div().Class("play-again btn-hover").Body(
+							app.Text("Play Again"),
+						).OnClick(g.onClickPlayAgain),
+					),
 				),
 			),
 		),
 	)
+}
+
+func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
+	resp, err := http.Get("http://localhost:7790/api/game/play-again")
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("onClickPlayAgain() err: %s", err)
+	}
+	gameStateResponse := api.GameStateResponse{}
+	json.Unmarshal(body, &gameStateResponse)
+
+	UIGameState.Board.State = gameStateResponse.GameState
+	UIGameState.Winner = gameStateResponse.Winner
+	UIGameState.PlayerTurn = gameStateResponse.PlayerTurn
+	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
+	UIGameState.PossibleMoves = make(map[int]*game.Move)
+	UIGameState.Board.calculatePositions()
 }

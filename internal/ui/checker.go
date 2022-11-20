@@ -105,33 +105,3 @@ func updatePossibleMoves(checkerPosition int) {
 		fmt.Printf("UIGameState.PossibleMoves[%d]: %+v\n", k, v)
 	}
 }
-
-// Move ...
-// func (c *Checker) Move(val int) {
-// 	c.Position.Value = c.Position.Value + val
-// }
-
-// // NewPosition ...
-// func (c *Checker) NewPosition(val int) (to Position) {
-// 	to = *c.Position
-// 	to.Value = c.Position.Value + val
-// 	return
-// }
-
-// // PossibleMoves are the positions within the board relative the checker's position
-// // func (c *Checker) PossibleMoves() (validMoves []Position) {
-// func (c *Checker) PossibleMoves() (validMoves []int) {
-// 	if c.Position.Value+7 < 63 {
-// 		validMoves = append(validMoves, c.Position.Value+7)
-// 	}
-// 	if c.Position.Value+9 < 63 {
-// 		validMoves = append(validMoves, c.Position.Value+9)
-// 	}
-// 	if c.Position.Value-7 > 0 {
-// 		validMoves = append(validMoves, c.Position.Value-7)
-// 	}
-// 	if c.Position.Value-9 > 0 {
-// 		validMoves = append(validMoves, c.Position.Value-9)
-// 	}
-// 	return
-// }

@@ -17,18 +17,3 @@ func (p *Position) Render() app.UI {
 		p.Square.Render(),
 	)
 }
-
-// HasChecker ...
-// func (p *Position) HasChecker() bool {
-// 	return p.Checker != nil
-// }
-
-// GetValue - since value will be immutable
-// func (p *Position) GetValue() int {
-// 	return p.Value
-// }
-
-// // ToggleHighlight is for toggling highlighting for a move
-// func (p *Position) ToggleHighlight() {
-// 	p.isHighlighted = !p.isHighlighted
-// }

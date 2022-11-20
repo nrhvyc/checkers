@@ -24,6 +24,7 @@ func main() {
 
 	// Register API Routes
 	mux.HandleFunc("/api/game/state", api.GameStateHandler)
+	mux.HandleFunc("/api/game/play-again", api.PlayAgainHandler)
 	mux.HandleFunc("/api/checker/possible-moves", api.PossibleMovesHandler)
 	mux.HandleFunc("/api/checker/move", api.CheckerMoveHandler)
 

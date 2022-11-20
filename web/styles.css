@@ -44,23 +44,73 @@ body.vsc-initialized {
     border: 2px solid rgb(252 255 0) !important;
 }
 
+.menu {
+    font-family: 'Neue Haas Grotesk Text Pro';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 576px;
+    flex-direction: column;
+    transition: all .5s ease-in-out;
+}
+
+.menu-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .winner {
-    background-color: rgba(255, 255, 255, 0.314);
+    background-color: rgb(255, 255, 255);
     width: 576px;
     height: 576px;
 }
 
+.play-again-container {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding-bottom: 38px;
+}
+
+.play-again {
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 15px 15px;
+    /* background-color: darkgoldenrod; */
+    width: 100px;
+    text-align: center;
+    color: white;
+
+    background-image: linear-gradient(to right, #ffbb00, #e43603, #e85a19);
+}
+
+.play-again:hover {
+    background-position: 100% 0;
+    transition: all .25s ease-in-out;
+    box-shadow: 0 4px 15px 0 rgba(229, 66, 10, 0.75);
+}
+
+.btn-hover:focus {
+    outline: none;
+}
+
 .winner-text {
+    cursor: default;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 76px;
+    padding-bottom: 38px;
+    cursor: default;
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: 0fr 0fr;
     grid-gap: 0px;
+    justify-content: center;
 }
 
 .checker {
