@@ -16,6 +16,7 @@ type CheckerMoveResponse struct {
 	GameState     string
 	PlayerTurn    bool // false = black's turn; true = white's turn
 	FollowUpMoves []game.Move
+	Winner        game.Winner
 }
 
 func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +39,7 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 		// GameState:  "_b_b_b_bb_b_b_b____b_b_bb_______________w_w_w_w__w_w_w_ww_w_w_w_",
 		GameState:     game.GameState.StateToString(),
 		PlayerTurn:    game.GameState.PlayerTurn,
+		Winner:        game.GameState.Winner,
 		FollowUpMoves: followUpMoves,
 	}
 

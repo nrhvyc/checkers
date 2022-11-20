@@ -5,9 +5,18 @@ import (
 	"strings"
 )
 
+type Winner int
+
+const (
+	NoWinner Winner = iota
+	BlackWinner
+	WhiteWinner
+)
+
 type Game struct {
 	Board      Board
 	PlayerTurn bool // false = black's turn; true = white's turn
+	Winner     Winner
 }
 
 type Board struct {
@@ -53,6 +62,14 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 	} else {
 		g.PlayerTurn = true
 	}
+
+	state := g.StateToString()
+	if strings.ToLower(g.Board.Positions[to/8][to%8]) == "b" && !strings.Contains(state, "w") {
+		g.Winner = BlackWinner
+	} else if strings.ToLower(g.Board.Positions[to/8][to%8]) == "w" && !strings.Contains(state, "b") {
+		g.Winner = WhiteWinner
+	}
+
 	return
 }
 

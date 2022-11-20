@@ -44,6 +44,25 @@ body.vsc-initialized {
     border: 2px solid rgb(252 255 0) !important;
 }
 
+.winner {
+    background-color: rgba(255, 255, 255, 0.314);
+    width: 576px;
+    height: 576px;
+}
+
+.winner-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 76px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 0fr 0fr;
+    grid-gap: 0px;
+}
+
 .checker {
 	border-radius: 50%;
 	border: 2px solid white;

@@ -97,5 +97,6 @@ func makeMove(from, to int) {
 	}
 	UIGameState.Board.State = checkerMoveResponse.GameState
 	UIGameState.PlayerTurn = checkerMoveResponse.PlayerTurn
+	UIGameState.Winner = checkerMoveResponse.Winner
 	UIGameState.Board.calculatePositions()
 }

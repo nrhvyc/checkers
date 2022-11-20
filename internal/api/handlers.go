@@ -12,6 +12,7 @@ type GameStateRequest struct{}
 type GameStateResponse struct {
 	GameState  string `json:"gameState"`
 	PlayerTurn bool   `json:"playerTurn"` // false = black's turn; true = white's turn
+	Winner     game.Winner
 }
 
 func GameStateHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,6 +30,7 @@ func GameStateHandler(w http.ResponseWriter, r *http.Request) {
 	resp := GameStateResponse{
 		GameState:  game.GameState.StateToString(),
 		PlayerTurn: game.GameState.PlayerTurn,
+		Winner:     game.GameState.Winner,
 	}
 
 	json.NewEncoder(w).Encode(resp)
