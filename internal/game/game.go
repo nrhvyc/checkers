@@ -64,9 +64,9 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 	}
 
 	state := g.StateToString()
-	if strings.ToLower(g.Board.Positions[to/8][to%8]) == "b" && !strings.Contains(state, "w") {
+	if strings.ToLower(g.Board.Positions[to/8][to%8]) == "b" && !strings.Contains(state, "w") && !strings.Contains(state, "W") {
 		g.Winner = BlackWinner
-	} else if strings.ToLower(g.Board.Positions[to/8][to%8]) == "w" && !strings.Contains(state, "b") {
+	} else if strings.ToLower(g.Board.Positions[to/8][to%8]) == "w" && !strings.Contains(state, "b") && !strings.Contains(state, "B") {
 		g.Winner = WhiteWinner
 	}
 

@@ -82,6 +82,7 @@ body.vsc-initialized {
     width: 100px;
     text-align: center;
     color: white;
+    letter-spacing: 1px;
 
     background-image: linear-gradient(to right, #ffbb00, #e43603, #e85a19);
 }
@@ -104,6 +105,7 @@ body.vsc-initialized {
     height: 76px;
     padding-bottom: 38px;
     cursor: default;
+    letter-spacing: 3px;
 }
 
 .grid-container {
