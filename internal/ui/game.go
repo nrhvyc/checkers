@@ -11,6 +11,14 @@ import (
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
+type GameMode int
+
+const (
+	NewGame GameMode = iota
+	SinglePlayer
+	TwoPlayer
+)
+
 // Game ...
 type Game struct {
 	app.Compo
@@ -22,6 +30,7 @@ type Game struct {
 	LastCheckerClicked int  // location of the last checker clicked
 	PlayerTurn         bool // false = black's turn; true = white's turn
 	Winner             game.Winner
+	GameMode           GameMode
 }
 
 var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
@@ -33,7 +42,9 @@ var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
 // }
 
 func (g *Game) OnMount(ctx app.Context) {
-	initGameUI()
+	if UIGameState.GameMode != NewGame {
+		initGameUI()
+	}
 }
 
 // Render ...
@@ -49,15 +60,34 @@ func (g *Game) Render() app.UI {
 			g.Board.Render(),
 		),
 		app.Div().Class("menu").Body(
-			app.If(winnerMsg != "",
-				app.Div().Class("winner menu-center").Body(
-					app.Div().Class("winner-text").Body(
-						app.Text(winnerMsg),
+			app.If(UIGameState.GameMode == NewGame,
+				app.Div().Class("new-game-text").Body(
+					app.Text("New Game Selection"),
+				),
+				app.Div().Class("menu-center").Body(
+					app.Div().Class("new-game-container").Body(
+						app.Div().Class("new-game btn-hover").Body(
+							app.Text("Two Player"),
+						).OnClick(g.onClickTwoPlayer),
 					),
-					app.Div().Class("play-again-container").Body(
-						app.Div().Class("play-again btn-hover").Body(
-							app.Text("Play Again"),
-						).OnClick(g.onClickPlayAgain),
+					app.Div().Class("new-game-container").Body(
+						app.Div().Class("new-game btn-hover single-player").Body(
+							app.Text("Single Player"),
+						).OnClick(g.onClickSinglePlayer),
+					),
+				),
+			),
+			app.If(UIGameState.GameMode != NewGame,
+				app.If(winnerMsg != "",
+					app.Div().Class("winner menu-center").Body(
+						app.Div().Class("winner-text").Body(
+							app.Text(winnerMsg),
+						),
+						app.Div().Class("play-again-container").Body(
+							app.Div().Class("play-again btn-hover").Body(
+								app.Text("Play Again"),
+							).OnClick(g.onClickPlayAgain),
+						),
 					),
 				),
 			),
@@ -84,4 +114,12 @@ func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
 	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	UIGameState.Board.calculatePositions()
+}
+
+func (g *Game) onClickTwoPlayer(ctx app.Context, e app.Event) {
+
+}
+
+func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
+
 }

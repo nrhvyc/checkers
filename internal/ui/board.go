@@ -14,7 +14,9 @@ type Board struct {
 }
 
 func (b *Board) OnMount(ctx app.Context) {
-	initGameUI()
+	if UIGameState.GameMode != NewGame {
+		initGameUI()
+	}
 }
 
 // Render ...

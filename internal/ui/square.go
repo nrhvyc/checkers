@@ -27,8 +27,9 @@ type Square struct {
 }
 
 func (s *Square) OnMount(ctx app.Context) {
-	// ctx.GetState("board", &g.Board.Position)
-	initGameUI()
+	if UIGameState.GameMode != NewGame {
+		initGameUI()
+	}
 }
 
 // Render ...

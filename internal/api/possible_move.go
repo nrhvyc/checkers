@@ -27,7 +27,7 @@ func PossibleMovesHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	moves, captureMoves := game.GameState.PossibleMoves(request.CheckerPosition)
+	moves, captureMoves := game.GameState.Board.PossibleMoves(request.CheckerPosition)
 	moves = append(moves, captureMoves...)
 	resp := PossibleMovesResponse{
 		Moves: moves,
