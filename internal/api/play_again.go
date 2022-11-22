@@ -19,7 +19,7 @@ func PlayAgainHandler(w http.ResponseWriter, r *http.Request) {
 	request := GameStateRequest{}
 	fmt.Printf("PlayAgainHandler request: %+v\n", request)
 
-	game.GameState = game.NewGame()
+	game.GameState = game.NewGame(game.GameState.GameMode)
 
 	w.Header().Set("Content-Type", "application/json")
 

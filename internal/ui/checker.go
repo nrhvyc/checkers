@@ -25,7 +25,7 @@ type Checker struct {
 }
 
 func (c *Checker) OnMount(ctx app.Context) {
-	if UIGameState.GameMode != NewGame {
+	if UIGameState.GameMode != game.NewGameMode {
 		initGameUI()
 	}
 }

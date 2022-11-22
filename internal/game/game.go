@@ -13,7 +13,16 @@ const (
 	WhiteWinner
 )
 
+type GameMode int
+
+const (
+	NewGameMode GameMode = iota
+	SinglePlayer
+	TwoPlayer
+)
+
 type Game struct {
+	GameMode   GameMode
 	Board      Board
 	PlayerTurn bool // false = black's turn; true = white's turn
 	Winner     Winner
@@ -70,6 +79,8 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 // }
 
 func (g *Game) StateToString() string {
+	p := g.Board.Positions
+	fmt.Printf("p: %+v", p)
 	state := make([]string, 64)
 	for i := 0; i < 8; i++ {
 		for j := 0; j < 8; j++ {
