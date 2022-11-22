@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -22,6 +23,7 @@ type Game struct {
 	LastCheckerClicked int  // location of the last checker clicked
 	PlayerTurn         bool // false = black's turn; true = white's turn
 	Winner             game.Winner
+	GameMode           game.GameMode
 }
 
 var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
@@ -33,7 +35,9 @@ var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
 // }
 
 func (g *Game) OnMount(ctx app.Context) {
-	initGameUI()
+	if UIGameState.GameMode != game.NewGameMode {
+		initGameUI()
+	}
 }
 
 // Render ...
@@ -49,15 +53,35 @@ func (g *Game) Render() app.UI {
 			g.Board.Render(),
 		),
 		app.Div().Class("menu").Body(
-			app.If(winnerMsg != "",
-				app.Div().Class("winner menu-center").Body(
-					app.Div().Class("winner-text").Body(
-						app.Text(winnerMsg),
+			app.If(UIGameState.GameMode == game.NewGameMode,
+				app.Div().Class("new-game-text").Body(
+					app.Text("New Game Selection"),
+				),
+				app.Div().Class("menu-center").Body(
+					app.Div().Class("new-game-container").Body(
+						app.Div().Class("new-game btn-hover").Body(
+							app.Text("Two Player"),
+						).OnClick(g.onClickTwoPlayer),
 					),
-					app.Div().Class("play-again-container").Body(
-						app.Div().Class("play-again btn-hover").Body(
-							app.Text("Play Again"),
-						).OnClick(g.onClickPlayAgain),
+					app.Div().Class("new-game-container").Body(
+						app.Div().Class("new-game btn-hover single-player").Body(
+							app.Text("Single Player"),
+						),
+						//.OnClick(g.onClickSinglePlayer),
+					),
+				),
+			),
+			app.If(UIGameState.GameMode != game.NewGameMode,
+				app.If(winnerMsg != "",
+					app.Div().Class("winner menu-center").Body(
+						app.Div().Class("winner-text").Body(
+							app.Text(winnerMsg),
+						),
+						app.Div().Class("play-again-container").Body(
+							app.Div().Class("play-again btn-hover").Body(
+								app.Text("Play Again"),
+							).OnClick(g.onClickPlayAgain),
+						),
 					),
 				),
 			),
@@ -81,6 +105,53 @@ func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
 	UIGameState.Board.State = gameStateResponse.GameState
 	UIGameState.Winner = gameStateResponse.Winner
 	UIGameState.PlayerTurn = gameStateResponse.PlayerTurn
+	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
+	UIGameState.PossibleMoves = make(map[int]*game.Move)
+	UIGameState.Board.calculatePositions()
+}
+
+func (g *Game) onClickTwoPlayer(ctx app.Context, e app.Event) {
+	g.newGame(ctx, e, game.TwoPlayer)
+}
+
+func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
+	g.newGame(ctx, e, game.SinglePlayer)
+}
+
+func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
+	newGameRequest := api.NewGameRequest{GameMode: gameMode}
+	req, err := json.Marshal(newGameRequest)
+	if err != nil {
+		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
+	}
+
+	request, err := http.NewRequest("POST", "http://localhost:7790/api/game/new",
+		bytes.NewBuffer(req))
+	if err != nil {
+		fmt.Printf("error creating request err: %s\n", err)
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("client.Do err: %s", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Game OnMount() err: %s", err)
+	}
+
+	newGameResponse := api.NewGameResponse{}
+	json.Unmarshal(body, &newGameResponse)
+
+	UIGameState.GameMode = gameMode
+	UIGameState.Board.State = newGameResponse.GameState
+	UIGameState.Winner = game.NoWinner
+	UIGameState.PlayerTurn = newGameResponse.PlayerTurn
 	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
 	UIGameState.Board.calculatePositions()

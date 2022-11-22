@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/nrhvyc/checkers/internal/game"
 )
 
 // Board ...
@@ -14,7 +15,9 @@ type Board struct {
 }
 
 func (b *Board) OnMount(ctx app.Context) {
-	initGameUI()
+	if UIGameState.GameMode != game.NewGameMode {
+		initGameUI()
+	}
 }
 
 // Render ...
