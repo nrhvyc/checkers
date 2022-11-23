@@ -1,8 +1,30 @@
 package game
 
+import (
+	"math/rand"
+	"time"
+)
+
 var GameState *Game
 
 func NewGame(gameMode GameMode) *Game {
+	// Set Play Positions
+	var players [2]Player
+	if gameMode == SinglePlayer {
+		rand.Seed(time.Now().UTC().Unix())
+		pos := rand.Intn(2)
+		players[pos] = Player{
+			Type: HumanPlayer,
+		}
+		aiPos := 0
+		if pos == 0 {
+			aiPos = 1
+		}
+		players[aiPos] = Player{
+			Type: AIPlayer,
+		}
+	}
+
 	g := Game{
 		GameMode: gameMode,
 		Board: Board{
@@ -13,6 +35,7 @@ func NewGame(gameMode GameMode) *Game {
 			// state: "_b___w_bb_b_b____b_b______b_b____b_w___ww_w_w________w_ww_w_w_w_",  // Test Case for multi capture 4
 			// state: " ____________________________b______w____________________________", // Test Case end game
 		},
+		Players: players,
 	}
 	g.SetStateFromString()
 	return &g

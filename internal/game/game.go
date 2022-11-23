@@ -21,11 +21,23 @@ const (
 	TwoPlayer
 )
 
+type PlayerType int
+
+const (
+	HumanPlayer PlayerType = iota
+	AIPlayer
+)
+
+type Player struct {
+	Type PlayerType
+}
+
 type Game struct {
 	GameMode   GameMode
 	Board      Board
 	PlayerTurn bool // false = black's turn; true = white's turn
 	Winner     Winner
+	Players    [2]Player
 }
 
 type Move struct {

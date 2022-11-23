@@ -67,7 +67,7 @@ func (g *Game) Render() app.UI {
 						app.Div().Class("new-game btn-hover single-player").Body(
 							app.Text("Single Player"),
 						),
-						//.OnClick(g.onClickSinglePlayer),
+						// ).OnClick(g.onClickSinglePlayer),
 					),
 				),
 			),
