@@ -10,9 +10,7 @@ import (
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
-// var console = js.Global().Get("console")
-
-// UIGameState holds global state
+// UIGameState holds global client state
 var UIGameState Game
 
 var hasLoaded bool
@@ -41,6 +39,15 @@ func initGameUI() {
 
 	if UIGameState.GameMode == game.NewGameMode {
 		return
+	}
+
+	if UIGameState.GameMode == game.SinglePlayer {
+		for pos, player := range gameStateResponse.Players {
+			if player.Type == game.HumanPlayer {
+				UIGameState.ClientPlayer = game.PlayerTurn(pos)
+				break
+			}
+		}
 	}
 
 	UIGameState.Board.State = gameStateResponse.GameState

@@ -48,14 +48,7 @@ func (c *Checker) Render() app.UI {
 		squareClasses = append(squareClasses, "king")
 	}
 
-	isClientTurn := false
-	if strings.ToLower(c.Value) == "b" && UIGameState.PlayerTurn == game.Player1 {
-		isClientTurn = true
-	} else if strings.ToLower(c.Value) == "w" && UIGameState.PlayerTurn == game.Player2 {
-		isClientTurn = true
-	}
-
-	if isClientTurn {
+	if c.isCheckerTurn() {
 		squareClasses = append(squareClasses, " clickable")
 		return app.Div().
 			OnClick(c.onClick).
@@ -64,6 +57,22 @@ func (c *Checker) Render() app.UI {
 		return app.Div().
 			Class("Checker", strings.Join(squareClasses, " "))
 	}
+}
+
+func (c *Checker) isCheckerTurn() bool {
+	if UIGameState.GameMode == game.SinglePlayer &&
+		UIGameState.PlayerTurn != UIGameState.ClientPlayer {
+		return false
+	}
+
+	isTurn := false
+	if strings.ToLower(c.Value) == "b" && UIGameState.PlayerTurn == game.Player1 {
+		isTurn = true
+	} else if strings.ToLower(c.Value) == "w" && UIGameState.PlayerTurn == game.Player2 {
+		isTurn = true
+	}
+
+	return isTurn
 }
 
 func (c *Checker) onClick(ctx app.Context, e app.Event) {
