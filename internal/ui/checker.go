@@ -25,9 +25,7 @@ type Checker struct {
 }
 
 func (c *Checker) OnMount(ctx app.Context) {
-	if UIGameState.GameMode != game.NewGameMode {
-		initGameUI()
-	}
+	initGameUI()
 }
 
 // Render ...
@@ -50,7 +48,14 @@ func (c *Checker) Render() app.UI {
 		squareClasses = append(squareClasses, "king")
 	}
 
-	if (strings.ToLower(c.Value) == "b" && !UIGameState.PlayerTurn) || (strings.ToLower(c.Value) == "w" && UIGameState.PlayerTurn) {
+	isClientTurn := false
+	if strings.ToLower(c.Value) == "b" && UIGameState.PlayerTurn == game.Player1 {
+		isClientTurn = true
+	} else if strings.ToLower(c.Value) == "w" && UIGameState.PlayerTurn == game.Player2 {
+		isClientTurn = true
+	}
+
+	if isClientTurn {
 		squareClasses = append(squareClasses, " clickable")
 		return app.Div().
 			OnClick(c.onClick).

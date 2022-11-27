@@ -14,7 +14,7 @@ type CheckerMoveRequest struct {
 type CheckerMoveResponse struct {
 	WasAllowed    bool
 	GameState     string
-	PlayerTurn    bool // false = black's turn; true = white's turn
+	PlayerTurn    game.PlayerTurn // false = black's turn; true = white's turn
 	FollowUpMoves []game.Move
 	Winner        game.Winner
 }

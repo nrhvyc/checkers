@@ -10,9 +10,11 @@ import (
 
 type GameStateRequest struct{}
 type GameStateResponse struct {
-	GameState  string `json:"gameState"`
-	PlayerTurn bool   `json:"playerTurn"` // false = black's turn; true = white's turn
+	GameMode   game.GameMode   `json:"gameMode"`
+	GameState  string          `json:"gameState"`
+	PlayerTurn game.PlayerTurn `json:"playerTurn"`
 	Winner     game.Winner
+	Players    [2]game.Player `json:"players"`
 }
 
 func GameStateHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,12 +29,22 @@ func GameStateHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	resp := GameStateResponse{
-		GameState:  game.GameState.StateToString(),
-		PlayerTurn: game.GameState.PlayerTurn,
-		Winner:     game.GameState.Winner,
+	var resp GameStateResponse
+	if game.GameState == nil || game.GameState.GameMode == game.NewGameMode {
+		resp = GameStateResponse{
+			GameMode: game.NewGameMode,
+		}
+	} else {
+		resp = GameStateResponse{
+			GameMode:   game.GameState.GameMode,
+			GameState:  game.GameState.StateToString(),
+			PlayerTurn: game.GameState.PlayerTurn,
+			Winner:     game.GameState.Winner,
+			Players:    game.GameState.Players,
+		}
 	}
 
+	fmt.Printf("GameStateHandler resp: %+v\n", resp)
 	json.NewEncoder(w).Encode(resp)
 }
 

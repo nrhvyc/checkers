@@ -16,28 +16,25 @@ import (
 type Game struct {
 	app.Compo
 
-	Board Board
-	// PossibleMoves  map[int]bool // map[location]bool locations highlighted for a possible move
-	PossibleMoves map[int]*game.Move // map[location]bool locations highlighted for a possible move
-	// Moves  map[int]bool // map[location]bool locations highlighted for a possible move
-	LastCheckerClicked int  // location of the last checker clicked
-	PlayerTurn         bool // false = black's turn; true = white's turn
-	Winner             game.Winner
-	GameMode           game.GameMode
+	Board              Board
+	PossibleMoves      map[int]*game.Move // map[location]bool locations highlighted for a possible move
+	LastCheckerClicked int                // location of the last checker clicked
+	PlayerTurn         game.PlayerTurn    // false = black's turn; true = white's turn
+
+	TurnCount int
+
+	Winner       game.Winner
+	GameMode     game.GameMode
+	Players      [2]game.Player
+	ClientPlayer game.PlayerTurn // which player this client is. Only used during single player for now
 }
 
 var winnerMessage = [3]string{"", "Player 1 Won!", "Player 2 Won!"}
 
 // func (g *Game) OnPreRender(ctx app.Context) {}
 
-// type GameStateResponse struct {
-// 	GameState string `json:"gameState"`
-// }
-
 func (g *Game) OnMount(ctx app.Context) {
-	if UIGameState.GameMode != game.NewGameMode {
-		initGameUI()
-	}
+	initGameUI()
 }
 
 // Render ...
@@ -66,8 +63,8 @@ func (g *Game) Render() app.UI {
 					app.Div().Class("new-game-container").Body(
 						app.Div().Class("new-game btn-hover single-player").Body(
 							app.Text("Single Player"),
-						),
-						// ).OnClick(g.onClickSinglePlayer),
+						// ),
+						).OnClick(g.onClickSinglePlayer),
 					),
 				),
 			),

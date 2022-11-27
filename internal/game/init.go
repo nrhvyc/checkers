@@ -35,7 +35,8 @@ func NewGame(gameMode GameMode) *Game {
 			// state: "_b___w_bb_b_b____b_b______b_b____b_w___ww_w_w________w_ww_w_w_w_",  // Test Case for multi capture 4
 			// state: " ____________________________b______w____________________________", // Test Case end game
 		},
-		Players: players,
+		Players:   players,
+		TurnCount: 0,
 	}
 	g.SetStateFromString()
 	return &g

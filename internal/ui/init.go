@@ -35,9 +35,18 @@ func initGameUI() {
 	gameStateResponse := api.GameStateResponse{}
 	json.Unmarshal(body, &gameStateResponse)
 
+	fmt.Printf("gameStateResponse.GameMode: %d\n", gameStateResponse.GameMode)
+
+	UIGameState.GameMode = gameStateResponse.GameMode
+
+	if UIGameState.GameMode == game.NewGameMode {
+		return
+	}
+
 	UIGameState.Board.State = gameStateResponse.GameState
 	UIGameState.Winner = gameStateResponse.Winner
 	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
 	UIGameState.PossibleMoves = make(map[int]*game.Move)
+
 	UIGameState.Board.calculatePositions()
 }

@@ -32,12 +32,20 @@ type Player struct {
 	Type PlayerType
 }
 
+type PlayerTurn int
+
+const (
+	Player1 PlayerTurn = iota
+	Player2
+)
+
 type Game struct {
 	GameMode   GameMode
 	Board      Board
-	PlayerTurn bool // false = black's turn; true = white's turn
+	PlayerTurn PlayerTurn
 	Winner     Winner
-	Players    [2]Player
+	Players    [2]Player // 0 = player 1 (black), 1 = player 2 (white)
+	TurnCount  int
 }
 
 type Move struct {
@@ -46,6 +54,10 @@ type Move struct {
 }
 
 func (g *Game) Move(move Move) (followUpMoves []Move) {
+	defer func() {
+		g.TurnCount++
+	}()
+
 	from := move.Path[0]
 	to := move.Path[len(move.Path)-1]
 	fmt.Printf("game.Move() from: %d to: %d", from, to)
@@ -64,16 +76,17 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 		}
 	}
 
+	// Promotion
 	if to >= 56 && g.Board.Positions[to/8][to%8] == "b" {
 		g.Board.Positions[to/8][to%8] = "B"
 	} else if to <= 7 && g.Board.Positions[to/8][to%8] == "w" {
 		g.Board.Positions[to/8][to%8] = "W"
 	}
 
-	if g.PlayerTurn {
-		g.PlayerTurn = false
+	if g.PlayerTurn == Player1 {
+		g.PlayerTurn = Player2
 	} else {
-		g.PlayerTurn = true
+		g.PlayerTurn = Player1
 	}
 
 	state := g.StateToString()
@@ -91,8 +104,8 @@ func (g *Game) Move(move Move) (followUpMoves []Move) {
 // }
 
 func (g *Game) StateToString() string {
-	p := g.Board.Positions
-	fmt.Printf("p: %+v", p)
+	// p := g.Board.Positions
+	// fmt.Printf("p: %+v", p)
 	state := make([]string, 64)
 	for i := 0; i < 8; i++ {
 		for j := 0; j < 8; j++ {
