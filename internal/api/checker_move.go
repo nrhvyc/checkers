@@ -33,6 +33,11 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 
 	followUpMoves := game.GameState.Move(request.Move)
 
+	if game.GameState.Players[game.GameState.PlayerTurn].Type == game.AIPlayer {
+		game.GameState.AIMove()
+		followUpMoves = []game.Move{}
+	}
+
 	resp := CheckerMoveResponse{
 		WasAllowed:    true,
 		GameState:     game.GameState.StateToString(),

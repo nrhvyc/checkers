@@ -53,6 +53,8 @@ type Move struct {
 	CheckersCaptured []int
 }
 
+func (g *Game) AIMove() {}
+
 func (g *Game) Move(move Move) (followUpMoves []Move) {
 	defer func() {
 		g.TurnCount++
