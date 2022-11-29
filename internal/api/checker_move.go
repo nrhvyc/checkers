@@ -31,12 +31,10 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	// game.GameState.Move(request.From, request.To)
 	followUpMoves := game.GameState.Move(request.Move)
 
 	resp := CheckerMoveResponse{
-		WasAllowed: true,
-		// GameState:  "_b_b_b_bb_b_b_b____b_b_bb_______________w_w_w_w__w_w_w_ww_w_w_w_",
+		WasAllowed:    true,
 		GameState:     game.GameState.StateToString(),
 		PlayerTurn:    game.GameState.PlayerTurn,
 		Winner:        game.GameState.Winner,
