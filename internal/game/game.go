@@ -2,7 +2,9 @@ package game
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 type Winner int
@@ -53,7 +55,40 @@ type Move struct {
 	CheckersCaptured []int
 }
 
-func (g *Game) AIMove() {}
+func (g *Game) AIMove(playerTurn PlayerTurn) {
+	// Get possible moves for every checker for g.Players[g.Playturn]
+	possibleNonCapture := []Move{}
+	possibleCapture := []Move{}
+
+	loc := func(row, col int) int {
+		return (row)*8 + (col)
+	}
+
+	for i, row := range g.Board.Positions {
+		for j, square := range row {
+			if playerTurn == Player1 && strings.ToLower(square) == "b" {
+				n, c := g.Board.PossibleMoves(loc(i, j))
+				possibleNonCapture = append(possibleNonCapture, n...)
+				possibleCapture = append(possibleCapture, c...)
+			} else if playerTurn == Player2 && strings.ToLower(square) == "w" {
+				n, c := g.Board.PossibleMoves(loc(i, j))
+				possibleNonCapture = append(possibleNonCapture, n...)
+				possibleCapture = append(possibleCapture, c...)
+			}
+		}
+	}
+
+	rand.Seed(time.Now().UTC().Unix())
+
+	// Pick a random possible move
+	if len(possibleCapture) > 0 {
+		r := rand.Intn(len(possibleCapture))
+		g.Move(possibleCapture[r])
+	} else if len(possibleNonCapture) > 0 {
+		r := rand.Intn(len(possibleNonCapture))
+		g.Move(possibleNonCapture[r])
+	}
+}
 
 func (g *Game) Move(move Move) (followUpMoves []Move) {
 	defer func() {

@@ -34,7 +34,7 @@ func CheckerMoveHandler(w http.ResponseWriter, r *http.Request) {
 	followUpMoves := game.GameState.Move(request.Move)
 
 	if game.GameState.Players[game.GameState.PlayerTurn].Type == game.AIPlayer {
-		game.GameState.AIMove()
+		game.GameState.AIMove(game.GameState.PlayerTurn)
 		followUpMoves = []game.Move{}
 	}
 
