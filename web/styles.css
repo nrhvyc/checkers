@@ -113,12 +113,12 @@ body.vsc-initialized {
     box-shadow: 0 4px 15px 0 rgba(229, 66, 10, 0.75);
 }
 
-.single-player {
+.disabled-button {
     cursor: default !important;
     background-image: linear-gradient(to right, #8f8f8f, #888888, #474747) !important;
 }
 
-.single-player:hover {
+.disabled-button:hover {
     box-shadow: 0 0 0 !important;
 }
 
@@ -126,14 +126,21 @@ body.vsc-initialized {
     align-items: center;
     justify-content: center;
     display: flex;
-    padding-bottom: 38px;
-    padding-top: 38px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.menu-title {
+    color: white;
+    width: 200px;
+    text-align: center;
 }
 
 .new-game-text {
     color: white;
     width: 200px;
     text-align: center;
+    padding-bottom: 30px;
 }
 
 .btn-hover:focus {

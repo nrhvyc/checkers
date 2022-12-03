@@ -51,6 +51,9 @@ func (g *Game) Render() app.UI {
 		),
 		app.Div().Class("menu").Body(
 			app.If(UIGameState.GameMode == game.NewGameMode,
+				app.H1().Class("menu-title").Body(
+					app.Text("Checkers"),
+				),
 				app.Div().Class("new-game-text").Body(
 					app.Text("New Game Selection"),
 				),
@@ -61,9 +64,8 @@ func (g *Game) Render() app.UI {
 						).OnClick(g.onClickTwoPlayer),
 					),
 					app.Div().Class("new-game-container").Body(
-						app.Div().Class("new-game btn-hover single-player").Body(
+						app.Div().Class("new-game btn-hover").Body(
 							app.Text("Single Player"),
-						// ),
 						).OnClick(g.onClickSinglePlayer),
 					),
 				),
