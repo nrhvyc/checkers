@@ -23,6 +23,7 @@ func NewGame(gameMode GameMode) *Game {
 		players[aiPos] = Player{
 			Type: AIPlayer,
 		}
+		// client.NewPeer()
 	}
 
 	g := Game{
