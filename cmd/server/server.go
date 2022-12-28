@@ -6,11 +6,14 @@ import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/rs/cors"
 
-	"github.com/nrhvyc/checkers/internal/api"
+	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
+	"github.com/nrhvyc/checkers/internal/matchmaker"
 	"github.com/nrhvyc/checkers/internal/ui"
 )
 
 func main() {
+	go matchmaker.RunMatchMaker()
+
 	appHandler := &app.Handler{
 		Title:  "Checkers",
 		Styles: []string{"/web/styles.css"},
@@ -23,12 +26,12 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register API Routes
-	mux.HandleFunc("/api/game/state", api.GameStateHandler)
-	mux.HandleFunc("/api/game/new", api.NewGameHandler)
-	mux.HandleFunc("/api/game/play-again", api.PlayAgainHandler)
-	mux.HandleFunc("/api/checker/possible-moves", api.PossibleMovesHandler)
-	mux.HandleFunc("/api/checker/move", api.CheckerMoveHandler)
-	// mux.HandleFunc("/api/match/new", api.CheckerMoveHandler)
+	mux.HandleFunc("/api/game/state", serverAPI.GameStateHandler)
+	mux.HandleFunc("/api/game/new", serverAPI.NewGameHandler)
+	mux.HandleFunc("/api/game/play-again", serverAPI.PlayAgainHandler)
+	mux.HandleFunc("/api/checker/possible-moves", serverAPI.PossibleMovesHandler)
+	mux.HandleFunc("/api/checker/move", serverAPI.CheckerMoveHandler)
+	// mux.HandleFunc("/api/match/new", serverAPI.CheckerMoveHandler)
 
 	// Register WASM Routes
 	mux.Handle("/", appHandler)

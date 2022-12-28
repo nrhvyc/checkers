@@ -44,7 +44,7 @@ func answerServer() {
 		}
 	}()
 
-	// When an ICE candidate is available send to the other Pion instance
+	// When an ICE candidate is available to send to the other Pion instance
 	// the other Pion instance will add this candidate by calling AddICECandidate
 	peerConnection.OnICECandidate(func(c *webrtc.ICECandidate) {
 		if c == nil {

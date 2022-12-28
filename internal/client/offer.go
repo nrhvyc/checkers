@@ -96,6 +96,7 @@ func offerServer() {
 			}
 		}
 	})
+
 	// Start HTTP server that accepts requests from the answer process
 	go func() { panic(http.ListenAndServe(*offerAddr, nil)) }()
 

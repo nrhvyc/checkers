@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/nrhvyc/checkers/internal/api"
+	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -80,7 +80,7 @@ func (c *Checker) onClick(ctx app.Context, e app.Event) {
 }
 
 func updatePossibleMoves(checkerPosition int) {
-	possibleMovesRequest := api.PossibleMovesRequest{CheckerPosition: checkerPosition}
+	possibleMovesRequest := serverAPI.PossibleMovesRequest{CheckerPosition: checkerPosition}
 	req, err := json.Marshal(possibleMovesRequest)
 	if err != nil {
 		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
@@ -105,7 +105,7 @@ func updatePossibleMoves(checkerPosition int) {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
 
-	possibleMovesResponse := api.PossibleMovesResponse{}
+	possibleMovesResponse := serverAPI.PossibleMovesResponse{}
 	json.Unmarshal(body, &possibleMovesResponse)
 
 	fmt.Printf("updatePossibleMoves() PossibleMoves: %+v\n", possibleMovesResponse)

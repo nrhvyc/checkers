@@ -8,7 +8,8 @@ import (
 	"net/http"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/nrhvyc/checkers/internal/api"
+	clientAPI "github.com/nrhvyc/checkers/internal/api/client"
+	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -98,7 +99,7 @@ func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
 	if err != nil {
 		fmt.Printf("onClickPlayAgain() err: %s", err)
 	}
-	gameStateResponse := api.GameStateResponse{}
+	gameStateResponse := serverAPI.GameStateResponse{}
 	json.Unmarshal(body, &gameStateResponse)
 
 	UIGameState.Board.State = gameStateResponse.GameState
@@ -118,10 +119,14 @@ func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
 }
 
 func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
-	newGameRequest := api.NewGameRequest{GameMode: gameMode}
+	newGameRequest := serverAPI.NewGameRequest{GameMode: gameMode}
 	req, err := json.Marshal(newGameRequest)
 	if err != nil {
 		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
+	}
+
+	if gameMode == game.TwoPlayer {
+		go clientAPI.ClientServer()
 	}
 
 	request, err := http.NewRequest("POST", "http://localhost:7790/api/game/new",
@@ -144,7 +149,7 @@ func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
 
-	newGameResponse := api.NewGameResponse{}
+	newGameResponse := serverAPI.NewGameResponse{}
 	json.Unmarshal(body, &newGameResponse)
 
 	UIGameState.GameMode = gameMode

@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/nrhvyc/checkers/internal/api"
+	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -56,7 +56,7 @@ func (s *Square) onPossibleMoveClick(ctx app.Context, e app.Event) {
 
 func makeMove(from, to int) {
 	fmt.Printf("square makeMove() from: %d to: %d", from, to)
-	checkerMoveRequest := api.CheckerMoveRequest{
+	checkerMoveRequest := serverAPI.CheckerMoveRequest{
 		Move: *UIGameState.PossibleMoves[to],
 	}
 	req, err := json.Marshal(checkerMoveRequest)
@@ -83,7 +83,7 @@ func makeMove(from, to int) {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
 
-	checkerMoveResponse := api.CheckerMoveResponse{}
+	checkerMoveResponse := serverAPI.CheckerMoveResponse{}
 	json.Unmarshal(body, &checkerMoveResponse)
 
 	fmt.Printf("makeMove() PossibleMoves: %+v", checkerMoveResponse)

@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/nrhvyc/checkers/internal/api"
+	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -30,7 +30,7 @@ func initGameUI() {
 	if err != nil {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
-	gameStateResponse := api.GameStateResponse{}
+	gameStateResponse := serverAPI.GameStateResponse{}
 	json.Unmarshal(body, &gameStateResponse)
 
 	fmt.Printf("gameStateResponse.GameMode: %d\n", gameStateResponse.GameMode)
