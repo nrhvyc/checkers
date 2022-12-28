@@ -6,10 +6,12 @@ import (
 	"net/http"
 
 	"github.com/nrhvyc/checkers/internal/game"
+	"github.com/nrhvyc/checkers/internal/matchmaker"
 )
 
 type NewGameRequest struct {
-	GameMode game.GameMode
+	GameMode       game.GameMode
+	ClientAnswerIP string
 }
 type NewGameResponse struct {
 	GameState  string          `json:"gameState"`
@@ -28,6 +30,10 @@ func NewGameHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("NewGameHandler request: %+v\n", request)
 
 	w.Header().Set("Content-Type", "application/json")
+
+	if request.GameMode == game.TwoPlayer {
+		matchmaker.AddToMatchQueue(request.ClientAnswerIP)
+	}
 
 	game.GameState = game.NewGame(request.GameMode)
 

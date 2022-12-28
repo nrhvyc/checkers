@@ -42,7 +42,3 @@ func NewGame(gameMode GameMode) *Game {
 	g.SetStateFromString()
 	return &g
 }
-
-// func init() {
-// 	GameState = NewGame()
-// }

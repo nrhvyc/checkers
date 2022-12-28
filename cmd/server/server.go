@@ -28,6 +28,7 @@ func main() {
 	mux.HandleFunc("/api/game/play-again", api.PlayAgainHandler)
 	mux.HandleFunc("/api/checker/possible-moves", api.PossibleMovesHandler)
 	mux.HandleFunc("/api/checker/move", api.CheckerMoveHandler)
+	// mux.HandleFunc("/api/match/new", api.CheckerMoveHandler)
 
 	// Register WASM Routes
 	mux.Handle("/", appHandler)
