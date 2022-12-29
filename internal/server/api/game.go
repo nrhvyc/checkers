@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nrhvyc/checkers/internal/matchmaker"
 	"github.com/nrhvyc/checkers/internal/server/game"
+	"github.com/nrhvyc/checkers/internal/server/matchmaker"
 )
 
 type GameStateRequest struct{}
