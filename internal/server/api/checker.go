@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nrhvyc/checkers/internal/game"
+	"github.com/nrhvyc/checkers/internal/server/game"
 )
 
 type CheckerMoveRequest struct {

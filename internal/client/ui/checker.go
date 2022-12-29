@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
-	"github.com/nrhvyc/checkers/internal/game"
+	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
+	"github.com/nrhvyc/checkers/internal/server/game"
 )
 
 // Checker ...

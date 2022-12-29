@@ -8,7 +8,7 @@ import (
 	"log"
 	"net/http"
 
-	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
+	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
 
 	"github.com/pion/stun"
 	"github.com/pion/webrtc/v3"
