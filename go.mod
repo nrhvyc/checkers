@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/maxence-charriere/go-app/v9 v9.6.7
+	github.com/pion/stun v0.3.5
 	github.com/pion/webrtc/v3 v3.1.49
 	github.com/rs/cors v1.8.2
 )
@@ -22,7 +23,6 @@ require (
 	github.com/pion/sctp v1.8.3 // indirect
 	github.com/pion/sdp/v3 v3.0.6 // indirect
 	github.com/pion/srtp/v2 v2.0.10 // indirect
-	github.com/pion/stun v0.3.5 // indirect
 	github.com/pion/transport v0.13.1 // indirect
 	github.com/pion/turn/v2 v2.0.8 // indirect
 	github.com/pion/udp v0.1.1 // indirect

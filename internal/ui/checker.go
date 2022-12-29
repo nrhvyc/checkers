@@ -86,7 +86,7 @@ func updatePossibleMoves(checkerPosition int) {
 		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
 	}
 
-	request, err := http.NewRequest("POST", "http://localhost:7790/api/checker/possible-moves",
+	request, err := http.NewRequest("POST", "http://localhost:7790/server/api/checker/possible-moves",
 		bytes.NewBuffer(req))
 	if err != nil {
 		fmt.Printf("error creating request err: %s\n", err)

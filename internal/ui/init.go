@@ -21,7 +21,7 @@ func initGameUI() {
 	} else {
 		hasLoaded = true
 	}
-	resp, err := http.Get("http://localhost:7790/api/game/state")
+	resp, err := http.Get("http://localhost:7790/server/api/game/state")
 	if err != nil {
 		panic(err)
 	}

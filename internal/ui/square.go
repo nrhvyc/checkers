@@ -64,7 +64,7 @@ func makeMove(from, to int) {
 		fmt.Printf("error marshalling MoveRequest err: %s", err)
 	}
 
-	request, err := http.NewRequest("POST", "http://localhost:7790/api/checker/move",
+	request, err := http.NewRequest("POST", "http://localhost:7790/server/api/checker/move",
 		bytes.NewBuffer(req))
 	if err != nil {
 		fmt.Printf("error creating request err: %s\n", err)

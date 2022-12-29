@@ -10,6 +10,7 @@ import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	clientAPI "github.com/nrhvyc/checkers/internal/api/client"
 	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
+	"github.com/nrhvyc/checkers/internal/client"
 	"github.com/nrhvyc/checkers/internal/game"
 )
 
@@ -90,7 +91,7 @@ func (g *Game) Render() app.UI {
 }
 
 func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
-	resp, err := http.Get("http://localhost:7790/api/game/play-again")
+	resp, err := http.Get("http://localhost:7790/server/api/game/play-again")
 	if err != nil {
 		panic(err)
 	}
@@ -119,17 +120,36 @@ func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
 }
 
 func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
-	newGameRequest := serverAPI.NewGameRequest{GameMode: gameMode}
+	var newGameResponse serverAPI.NewGameResponse
+
+	if gameMode == game.TwoPlayer {
+		go clientAPI.ClientServer()
+		client.RequestTwoPlayerMatch()
+	} else {
+		newLocalGame(ctx, gameMode)
+	}
+
+	UIGameState.GameMode = gameMode
+	UIGameState.Board.State = newGameResponse.GameState
+	UIGameState.Winner = game.NoWinner
+	UIGameState.PlayerTurn = newGameResponse.PlayerTurn
+	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
+	UIGameState.PossibleMoves = make(map[int]*game.Move)
+	UIGameState.Board.calculatePositions()
+}
+
+/*
+newLocalGame requests a new game with only one browser client connected with the
+game running on the server
+*/
+func newLocalGame(ctx app.Context, gameMode game.GameMode) {
+	newGameRequest := serverAPI.NewGameRequest{GameMode: game.SinglePlayer}
 	req, err := json.Marshal(newGameRequest)
 	if err != nil {
 		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
 	}
 
-	if gameMode == game.TwoPlayer {
-		go clientAPI.ClientServer()
-	}
-
-	request, err := http.NewRequest("POST", "http://localhost:7790/api/game/new",
+	request, err := http.NewRequest("POST", "http://localhost:7790/server/api/game/new",
 		bytes.NewBuffer(req))
 	if err != nil {
 		fmt.Printf("error creating request err: %s\n", err)
@@ -149,14 +169,6 @@ func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
 
-	newGameResponse := serverAPI.NewGameResponse{}
+	var newGameResponse serverAPI.NewGameResponse
 	json.Unmarshal(body, &newGameResponse)
-
-	UIGameState.GameMode = gameMode
-	UIGameState.Board.State = newGameResponse.GameState
-	UIGameState.Winner = game.NoWinner
-	UIGameState.PlayerTurn = newGameResponse.PlayerTurn
-	fmt.Printf("Current Board State: %s\n", UIGameState.Board.State)
-	UIGameState.PossibleMoves = make(map[int]*game.Move)
-	UIGameState.Board.calculatePositions()
 }
