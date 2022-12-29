@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
+	"github.com/nrhvyc/checkers/internal/server/game"
+	"github.com/nrhvyc/checkers/internal/server/matchmaker"
 
 	"github.com/pion/stun"
 	"github.com/pion/webrtc/v3"
@@ -20,20 +22,49 @@ func RequestTwoPlayerMatch() {
 	addPlayerToMatchQueue()
 }
 
-func addPlayerToMatchQueue() {
-	resp, err := http.Get("http://localhost:7790/server/api/match/add")
+func addPlayerToMatchQueue() serverAPI.AddToMatchQueueResponse {
+	clientAddress, err := ClientAddress()
 	if err != nil {
-		panic(err)
+		log.Fatalf("unable to retrieve ClientAddress err: %s", clientAddress)
+	} else {
+		log.Printf("clientAddress: %s", clientAddress.IP) // TODO: make this debug only for prod release
+	}
+
+	addPlayerRequest := serverAPI.AddToMatchQueueRequest{
+		GameMode: game.TwoPlayer,
+		ClientInfo: matchmaker.ClientInfo{
+			MappedAddress: clientAddress,
+		},
+	}
+	req, err := json.Marshal(addPlayerRequest)
+	if err != nil {
+		fmt.Printf("error marshalling PossibleMovesRequest err: %s", err)
+	}
+
+	request, err := http.NewRequest("POST", "http://localhost:7790/server/api/match/add",
+		bytes.NewBuffer(req))
+	if err != nil {
+		fmt.Printf("error creating request err: %s\n", err)
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		fmt.Printf("client.Do err: %s", err)
 	}
 	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("Game OnMount() err: %s", err)
 	}
-	gameStateResponse := serverAPI.GameStateResponse{}
-	json.Unmarshal(body, &gameStateResponse)
 
-	fmt.Printf("gameStateResponse.GameMode: %d\n", gameStateResponse.GameMode)
+	var addToMatchQueueResponse serverAPI.AddToMatchQueueResponse
+	json.Unmarshal(body, &addToMatchQueueResponse)
+
+	return addToMatchQueueResponse
 }
 
 func signalCandidate(addr string, c *webrtc.ICECandidate) error {

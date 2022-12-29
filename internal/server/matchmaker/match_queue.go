@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/pion/stun"
 )
 
 // type Match struct {
@@ -14,6 +16,7 @@ import (
 // }
 
 type ClientInfo struct {
+	MappedAddress stun.XORMappedAddress
 }
 
 var matchWaitingQueue chan ClientInfo
@@ -37,7 +40,11 @@ func RunMatchMaker() {
 
 		// if len(matchedPlayers) > 1 {
 		// 	// Blocks until two players requests match
-		callClientEstablishPeerConnection(<-matchWaitingQueue, <-matchWaitingQueue)
+		// callClientEstablishPeerConnection(<-matchWaitingQueue, <-matchWaitingQueue)
+		clientOne := <-matchWaitingQueue
+		fmt.Printf("clientOne: %+v", clientOne)
+		// callClientEstablishPeerConnection(<-matchWaitingQueue, ClientInfo{})
+		callClientEstablishPeerConnection(clientOne, ClientInfo{})
 		// }
 	}
 }

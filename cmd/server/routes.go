@@ -1,20 +1,23 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
+	"github.com/pion/stun"
 	"github.com/rs/cors"
 
-	serverAPI "github.com/nrhvyc/checkers/internal/api/server"
-	"github.com/nrhvyc/checkers/internal/matchmaker"
-	"github.com/nrhvyc/checkers/internal/ui"
+	"github.com/nrhvyc/checkers/internal/client/ui"
+	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
 )
 
 func main() {
-	time.Sleep(time.Second * 10)
-	go matchmaker.RunMatchMaker()
+	time.Sleep(time.Second * 5)
+	fmt.Println("starting...")
+	// go matchmaker.RunMatchMaker()
 
 	appHandler := &app.Handler{
 		Title:  "Checkers",
@@ -50,7 +53,42 @@ func main() {
 	})
 	router := c.Handler(mux)
 
+	addr, _ := serverAddress()
+	fmt.Printf("addr: %s", addr.IP.String())
+
 	if err := http.ListenAndServe(":7790", router); err != nil {
 		panic(err)
 	}
+}
+
+func serverAddress() (stun.XORMappedAddress, error) {
+	// Creating a "connection" to STUN server.
+	conn, err := stun.Dial("udp", "stun.l.google.com:19302")
+	if err != nil {
+		return stun.XORMappedAddress{}, err
+	}
+	// Building binding request with random transaction id.
+	message := stun.MustBuild(stun.TransactionID, stun.BindingRequest)
+
+	var xorMappedAddress stun.XORMappedAddress
+
+	// Sending request to STUN server, waiting for response message.
+	if err := conn.Do(message, func(res stun.Event) {
+		if res.Error != nil {
+			log.Fatal(res.Error)
+		}
+		// Decoding XOR-MAPPED-ADDRESS attribute from message.
+		var xorAddr stun.XORMappedAddress
+		if err := xorAddr.GetFrom(res.Message); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("your IP is", xorAddr.IP)
+
+		xorMappedAddress = xorAddr
+
+	}); err != nil {
+		return stun.XORMappedAddress{}, err
+	}
+
+	return xorMappedAddress, nil
 }

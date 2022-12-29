@@ -112,22 +112,22 @@ func (g *Game) onClickPlayAgain(ctx app.Context, e app.Event) {
 }
 
 func (g *Game) onClickTwoPlayer(ctx app.Context, e app.Event) {
-	g.newGame(ctx, e, game.TwoPlayer)
+	g.addToMatchQueue(ctx)
 }
 
 func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
 	g.newGame(ctx, e, game.SinglePlayer)
 }
 
+func (g *Game) addToMatchQueue(ctx app.Context) {
+	go clientAPI.ClientServer()
+	client.RequestTwoPlayerMatch()
+}
+
 func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
 	var newGameResponse serverAPI.NewGameResponse
 
-	if gameMode == game.TwoPlayer {
-		go clientAPI.ClientServer()
-		client.RequestTwoPlayerMatch()
-	} else {
-		newLocalGame(ctx, gameMode)
-	}
+	newGameResponse = newLocalGame(ctx, gameMode)
 
 	UIGameState.GameMode = gameMode
 	UIGameState.Board.State = newGameResponse.GameState
@@ -142,7 +142,7 @@ func (g *Game) newGame(ctx app.Context, e app.Event, gameMode game.GameMode) {
 newLocalGame requests a new game with only one browser client connected with the
 game running on the server
 */
-func newLocalGame(ctx app.Context, gameMode game.GameMode) {
+func newLocalGame(ctx app.Context, gameMode game.GameMode) serverAPI.NewGameResponse {
 	newGameRequest := serverAPI.NewGameRequest{GameMode: game.SinglePlayer}
 	req, err := json.Marshal(newGameRequest)
 	if err != nil {
@@ -171,4 +171,5 @@ func newLocalGame(ctx app.Context, gameMode game.GameMode) {
 
 	var newGameResponse serverAPI.NewGameResponse
 	json.Unmarshal(body, &newGameResponse)
+	return newGameResponse
 }

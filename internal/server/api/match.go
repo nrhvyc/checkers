@@ -6,36 +6,37 @@ import (
 	"net/http"
 
 	"github.com/nrhvyc/checkers/internal/server/game"
+	"github.com/nrhvyc/checkers/internal/server/matchmaker"
 )
 
 type AddToMatchQueueRequest struct {
-	CheckerPosition int `json:"checkerPosition"` // 17
+	GameMode   game.GameMode
+	ClientInfo matchmaker.ClientInfo
 }
+
 type AddToMatchQueueResponse struct {
-	Moves []game.Move `json:"moves"` // 24, 26
+	Status string
 }
 
 func AddToMatchQueueHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("AddToMatchQueueHandler")
+	fmt.Println("AddToMatchQueueHandler")
 
 	request := PossibleMovesRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		handleErr(w, fmt.Errorf("PossibleMovesHandler err: %s", err))
+		handleErr(w, fmt.Errorf("AddToMatchQueueHandler err: %s", err))
 		return
 	}
 
-	fmt.Printf("PossibleMovesHandler request: %+v\n", request)
+	fmt.Printf("AddToMatchQueueHandler request: %+v\n", request)
 
 	w.Header().Set("Content-Type", "application/json")
 
-	moves, captureMoves := game.GameState.Board.PossibleMoves(request.CheckerPosition)
-	moves = append(moves, captureMoves...)
-	resp := PossibleMovesResponse{
-		Moves: moves,
-	}
+	matchmaker.AddToMatchQueue(matchmaker.ClientInfo{}) // TODO: send this from the crontend code
 
-	fmt.Printf("PossibleMovesHandler response: %+v\n", resp)
+	resp := AddToMatchQueueResponse{Status: "test status"}
+
+	fmt.Printf("AddToMatchQueueHandler response: %+v\n", resp)
 
 	json.NewEncoder(w).Encode(resp)
 }
