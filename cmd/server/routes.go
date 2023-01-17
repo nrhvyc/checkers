@@ -12,12 +12,13 @@ import (
 
 	"github.com/nrhvyc/checkers/internal/client/ui"
 	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
+	"github.com/nrhvyc/checkers/internal/server/matchmaker"
 )
 
 func main() {
 	time.Sleep(time.Second * 5)
 	fmt.Println("starting...")
-	// go matchmaker.RunMatchMaker()
+	go matchmaker.RunMatchMaker()
 
 	appHandler := &app.Handler{
 		Title:  "Checkers",
@@ -54,8 +55,9 @@ func main() {
 	router := c.Handler(mux)
 
 	addr, _ := serverAddress()
-	fmt.Printf("addr: %s", addr.IP.String())
+	fmt.Printf("Server IP address: %s\n", addr.IP.String())
 
+	fmt.Println("Local Server Running At http://localhost:7790")
 	if err := http.ListenAndServe(":7790", router); err != nil {
 		panic(err)
 	}
@@ -82,7 +84,6 @@ func serverAddress() (stun.XORMappedAddress, error) {
 		if err := xorAddr.GetFrom(res.Message); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("your IP is", xorAddr.IP)
 
 		xorMappedAddress = xorAddr
 

@@ -32,7 +32,7 @@ func AddToMatchQueueHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	matchmaker.AddToMatchQueue(matchmaker.ClientInfo{}) // TODO: send this from the crontend code
+	matchmaker.AddToMatchQueue(matchmaker.ClientInfo{}) // TODO: send this from the frontend code
 
 	resp := AddToMatchQueueResponse{Status: "test status"}
 

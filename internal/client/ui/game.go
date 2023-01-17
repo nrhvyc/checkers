@@ -9,7 +9,6 @@ import (
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 	"github.com/nrhvyc/checkers/internal/client"
-	clientAPI "github.com/nrhvyc/checkers/internal/client/api"
 	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
 	"github.com/nrhvyc/checkers/internal/server/game"
 )
@@ -120,7 +119,7 @@ func (g *Game) onClickSinglePlayer(ctx app.Context, e app.Event) {
 }
 
 func (g *Game) addToMatchQueue(ctx app.Context) {
-	go clientAPI.ClientServer()
+	// go clientAPI.ClientServer()
 	client.RequestTwoPlayerMatch()
 }
 

@@ -17,7 +17,7 @@ import (
 )
 
 func RequestTwoPlayerMatch() {
-	go AnswerServer()
+	// go AnswerServer()
 
 	addPlayerToMatchQueue()
 }
@@ -25,7 +25,7 @@ func RequestTwoPlayerMatch() {
 func addPlayerToMatchQueue() serverAPI.AddToMatchQueueResponse {
 	clientAddress, err := ClientAddress()
 	if err != nil {
-		log.Fatalf("unable to retrieve ClientAddress err: %s", clientAddress)
+		log.Fatalf("unable to retrieve ClientAddress err: %s", err)
 	} else {
 		log.Printf("clientAddress: %s", clientAddress.IP) // TODO: make this debug only for prod release
 	}
@@ -82,10 +82,13 @@ func signalCandidate(addr string, c *webrtc.ICECandidate) error {
 	return nil
 }
 
+// ClientAddress -- UDP & TCP don't work on WASM compiled Go code
 func ClientAddress() (stun.XORMappedAddress, error) {
 	// Creating a "connection" to STUN server.
 	conn, err := stun.Dial("udp", "stun.l.google.com:19302")
+	fmt.Println("here")
 	if err != nil {
+		fmt.Println("here1")
 		return stun.XORMappedAddress{}, err
 	}
 	// Building binding request with random transaction id.
@@ -95,21 +98,29 @@ func ClientAddress() (stun.XORMappedAddress, error) {
 
 	// Sending request to STUN server, waiting for response message.
 	if err := conn.Do(message, func(res stun.Event) {
+		fmt.Println("here2")
 		if res.Error != nil {
-			log.Fatal(res.Error)
+			fmt.Println("here3")
+			// log.Fatal(res.Error)
+			log.Println(res.Error)
 		}
+		fmt.Println("here4")
 		// Decoding XOR-MAPPED-ADDRESS attribute from message.
 		var xorAddr stun.XORMappedAddress
 		if err := xorAddr.GetFrom(res.Message); err != nil {
-			log.Fatal(err)
+			fmt.Println("here5")
+			// log.Fatal(err)
+			log.Println(err)
 		}
 		fmt.Println("your IP is", xorAddr.IP)
 
 		xorMappedAddress = xorAddr
 
 	}); err != nil {
+		fmt.Println("here6")
 		return stun.XORMappedAddress{}, err
 	}
 
+	fmt.Println("here7")
 	return xorMappedAddress, nil
 }
