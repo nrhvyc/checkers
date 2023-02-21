@@ -1,4 +1,4 @@
-package client
+package webrtc
 
 import (
 	"net/http"

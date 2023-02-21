@@ -43,6 +43,12 @@ func main() {
 
 	mux.HandleFunc("/server/api/match/add", serverAPI.AddToMatchQueueHandler)
 
+	// mux.Handle("/server/api/sdp", websocket.Handler(func(ws *websocket.Conn) {
+	// 	sdp := webrtc.SessionDescription{}
+	// 	websocket.JSON.Receive(ws, &sdp)
+	// 	fmt.Printf("recieved client session desciption: %+v", sdp)
+	// }))
+
 	/*
 		Register WASM Routes
 	*/

@@ -1,4 +1,4 @@
-package client
+package webrtc
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/nrhvyc/checkers/internal/client"
+	client "github.com/nrhvyc/checkers/internal/client/webrtc"
 )
 
 type EstablishPeerConnectionRequest struct {

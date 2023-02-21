@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/nrhvyc/checkers/internal/server/game"
 	"github.com/nrhvyc/checkers/internal/server/matchmaker"
+	"github.com/pion/webrtc/v3"
 )
 
 type AddToMatchQueueRequest struct {
-	GameMode   game.GameMode
-	ClientInfo matchmaker.ClientInfo
+	// GameMode game.GameMode
+	// ClientInfo         matchmaker.ClientInfo
+	SessionDescription webrtc.SessionDescription
 }
 
 type AddToMatchQueueResponse struct {
@@ -21,7 +22,7 @@ type AddToMatchQueueResponse struct {
 func AddToMatchQueueHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("AddToMatchQueueHandler")
 
-	request := PossibleMovesRequest{}
+	request := AddToMatchQueueRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		handleErr(w, fmt.Errorf("AddToMatchQueueHandler err: %s", err))
@@ -32,7 +33,9 @@ func AddToMatchQueueHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	matchmaker.AddToMatchQueue(matchmaker.ClientInfo{}) // TODO: send this from the frontend code
+	matchmaker.AddToMatchQueue(matchmaker.ClientInfo{
+		SessionDescription: request.SessionDescription,
+	})
 
 	resp := AddToMatchQueueResponse{Status: "test status"}
 

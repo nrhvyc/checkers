@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sync"
 
-	"github.com/pion/stun"
+	"github.com/pion/webrtc/v3"
 )
 
 // type Match struct {
@@ -15,11 +16,36 @@ import (
 // 	Player1
 // }
 
+// type Peers struct {
+// 	ListLock    sync.RWMutex
+// 	Connections []PeerConnectionState
+// }
+
+// type PeerConnectionState struct {
+// 	PeerConnection *webrtc.PeerConnection
+// 	Websocket      *ThreadSafeWriter
+// }
+
+// type ThreadSafeWriter struct {
+// 	Conn  *websocket.Conn
+// 	Mutex sync.Mutex
+// }
+
 type ClientInfo struct {
-	MappedAddress stun.XORMappedAddress
+	// MappedAddress stun.XORMappedAddress
+	// Peers [2]Peer
+	SessionDescription webrtc.SessionDescription
 }
 
-var matchWaitingQueue chan ClientInfo
+type Match struct {
+	sync.Locker
+	Player1, Player2 *ClientInfo
+}
+
+var (
+	matchWaitingQueue chan ClientInfo
+	// matches           = []Match{}
+)
 
 func AddToMatchQueue(clientInfo ClientInfo) {
 	matchWaitingQueue <- clientInfo
@@ -29,23 +55,32 @@ func RunMatchMaker() {
 	const maxClientWaiting = 2
 	matchWaitingQueue = make(chan ClientInfo, maxClientWaiting)
 
-	// matchedPlayers := make([]ClientInfo, 2)
+	var match *Match
 
 	for {
-		// clientInfo := <-matchWaitingQueue // Blocks until player requests match
+		player := <-matchWaitingQueue
 
-		// fmt.Printf("clientInfo: %+v", clientInfo)
-
-		// matchedPlayers = append(matchedPlayers, clientInfo)
-
-		// if len(matchedPlayers) > 1 {
-		// 	// Blocks until two players requests match
-		// callClientEstablishPeerConnection(<-matchWaitingQueue, <-matchWaitingQueue)
-		clientOne := <-matchWaitingQueue
-		fmt.Printf("clientOne: %+v", clientOne)
-		// callClientEstablishPeerConnection(<-matchWaitingQueue, ClientInfo{})
-		callClientEstablishPeerConnection(clientOne, ClientInfo{})
-		// }
+		if match == nil {
+			match.Unlock()
+			match = &Match{
+				Player1: &ClientInfo{
+					SessionDescription: player.SessionDescription,
+				},
+			}
+			match.Lock()
+		} else if match.Player1 == nil {
+			match.Unlock()
+			match.Player1 = &ClientInfo{
+				SessionDescription: player.SessionDescription,
+			}
+			match.Lock()
+		} else if match.Player2 == nil {
+			match.Unlock()
+			match.Player2 = &ClientInfo{
+				SessionDescription: player.SessionDescription,
+			}
+			match.Lock()
+		}
 	}
 }
 

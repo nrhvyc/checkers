@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
-	"github.com/nrhvyc/checkers/internal/client"
+	client "github.com/nrhvyc/checkers/internal/client/webrtc"
 	serverAPI "github.com/nrhvyc/checkers/internal/server/api"
 	"github.com/nrhvyc/checkers/internal/server/game"
 )
