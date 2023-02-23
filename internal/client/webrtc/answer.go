@@ -6,11 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"math/rand"
 	"net/http"
 	"os"
 	"sync"
-	"time"
 
 	"log"
 
@@ -170,29 +168,29 @@ func (peer *answerPeer) handleCandidateReceived(w http.ResponseWriter, r *http.R
 }
 
 func (peer *answerPeer) handleDataChannelMessage(d *webrtc.DataChannel) {
-	fmt.Printf("New DataChannel %s %d\n", d.Label(), d.ID())
+	// fmt.Printf("New DataChannel %s %d\n", d.Label(), d.ID())
 
-	// Register channel opening handling
-	d.OnOpen(func() {
-		fmt.Printf("Data channel '%s'-'%d' open. Random messages will now be sent to any connected DataChannels every 5 seconds\n",
-			d.Label(), d.ID())
+	// // Register channel opening handling
+	// d.OnOpen(func() {
+	// 	fmt.Printf("Data channel '%s'-'%d' open. Random messages will now be sent to any connected DataChannels every 5 seconds\n",
+	// 		d.Label(), d.ID())
 
-		for range time.NewTicker(5 * time.Second).C {
-			rand.Seed(time.Now().Unix())
-			randInt := rand.Intn(99999999)
-			message := fmt.Sprintf("message %d", randInt)
-			fmt.Printf("Sending '%s'\n", message)
+	// 	for range time.NewTicker(5 * time.Second).C {
+	// 		rand.Seed(time.Now().Unix())
+	// 		randInt := rand.Intn(99999999)
+	// 		message := fmt.Sprintf("message %d", randInt)
+	// 		fmt.Printf("Sending '%s'\n", message)
 
-			// Send the message as text
-			sendTextErr := d.SendText(message)
-			if sendTextErr != nil {
-				panic(sendTextErr)
-			}
-		}
-	})
+	// 		// Send the message as text
+	// 		sendTextErr := d.SendText(message)
+	// 		if sendTextErr != nil {
+	// 			panic(sendTextErr)
+	// 		}
+	// 	}
+	// })
 
-	// Register text message handling
-	d.OnMessage(func(msg webrtc.DataChannelMessage) {
-		fmt.Printf("Message from DataChannel '%s': '%s'\n", d.Label(), string(msg.Data))
-	})
+	// // Register text message handling
+	// d.OnMessage(func(msg webrtc.DataChannelMessage) {
+	// 	fmt.Printf("Message from DataChannel '%s': '%s'\n", d.Label(), string(msg.Data))
+	// })
 }

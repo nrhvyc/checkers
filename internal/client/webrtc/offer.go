@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
 	"sync"
-	"time"
 
 	"github.com/pion/webrtc/v3"
 )
@@ -77,27 +75,14 @@ func OfferServer(offerChan chan webrtc.SessionDescription) {
 	peerConnection.OnConnectionStateChange(offerPeer.handleStateChange)
 
 	// Register channel opening handling
-	dataChannel.OnOpen(func() {
-		fmt.Printf("Data channel '%s'-'%d' open. Random messages will now be sent to any connected DataChannels every 5 seconds\n", dataChannel.Label(), dataChannel.ID())
-
-		for range time.NewTicker(5 * time.Second).C {
-			rand.Seed(time.Now().Unix())
-			randInt := rand.Intn(99999999)
-			message := fmt.Sprintf("message %d", randInt)
-			fmt.Printf("Sending '%s'\n", message)
-
-			// Send the message as text
-			sendTextErr := dataChannel.SendText(message)
-			if sendTextErr != nil {
-				panic(sendTextErr)
-			}
-		}
-	})
+	dataChannel.OnOpen(offerPeer.handleDataChannelMessage)
 
 	// Register text message handling
 	dataChannel.OnMessage(func(msg webrtc.DataChannelMessage) {
 		fmt.Printf("Message from DataChannel '%s': '%s'\n", dataChannel.Label(), string(msg.Data))
 	})
+	fmt.Println("handlers registered.")
+	fmt.Println("sending offer...")
 
 	// Create an offer to send to the other process
 	offer, err := peerConnection.CreateOffer(nil)
@@ -111,7 +96,6 @@ func OfferServer(offerChan chan webrtc.SessionDescription) {
 		panic(err)
 	}
 
-	fmt.Println("handlers registered.")
 	offerChan <- offer // send the offer back to the main thread
 
 	// Block forever
@@ -175,4 +159,21 @@ func (peer *offerPeer) handleStateChange(s webrtc.PeerConnectionState) {
 		fmt.Println("Peer Connection has gone to failed exiting")
 		os.Exit(0)
 	}
+}
+
+func (peer *offerPeer) handleDataChannelMessage() {
+	// fmt.Printf("Data channel '%s'-'%d' open. Random messages will now be sent to any connected DataChannels every 5 seconds\n", dataChannel.Label(), dataChannel.ID())
+
+	// for range time.NewTicker(5 * time.Second).C {
+	// 	rand.Seed(time.Now().Unix())
+	// 	randInt := rand.Intn(99999999)
+	// 	message := fmt.Sprintf("message %d", randInt)
+	// 	fmt.Printf("Sending '%s'\n", message)
+
+	// 	// Send the message as text
+	// 	sendTextErr := dataChannel.SendText(message)
+	// 	if sendTextErr != nil {
+	// 		panic(sendTextErr)
+	// 	}
+	// }
 }
